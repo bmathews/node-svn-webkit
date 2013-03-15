@@ -407,3 +407,7 @@ textarea, input {
 .settings input {
     width: 80%;
 }
+
+.CodeMirror pre {
+    font-family: "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Monaco, monospace !important;
+}
