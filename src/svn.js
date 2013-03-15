@@ -17,7 +17,83 @@ var SVN = function (repoRoot, readyCallback) {
 
 var svn = SVN.prototype;
 
-svn._processLogEntry = function (logText) {
+svn.diffExternal = function (file, revision, callback) {
+    return this.run('svn', ['diff', '-c', revision, this.repoRoot + file], callback);
+};
+
+svn.diffLocal = function (file, callback) {
+    return this.run('svn', ['diff', this.repoRoot + file], callback);
+};
+
+//TODO: ghetto. refactor
+svn.getFile = function (file, revision, callback) {
+    var path = this.repoRoot + file;
+    if (revision) {
+        return this.run('svn', ["cat", "-r", revision, path], callback);
+    }
+    return this.run('cat', [path], callback);
+};
+
+svn.getInfo = function (callback) {
+    var _this = this;
+    return this.run('svn', ['info', this.repoRoot], function (text, err) {
+        callback(_this._parseInfo(text));
+    });
+};
+
+svn.getLog = function (limit, callback) {
+    var _this = this;
+    return this.run('svn', ['log', this.repoRoot, '-v', '-l', limit || 25, '-r', 'HEAD:1', '--incremental'], function (text, err) {
+        callback(_this._parseLog(text));
+    });
+};
+
+svn.revertLocal = function (file, callback) {
+    return this.run('svn', ['revert', this.repoRoot + file], callback);
+};
+
+svn.getStatus = function (callback) {
+    var _this = this;
+    return this.run('svn', ['status', this.repoRoot], function (text, err) {
+        callback(_this._parseStatus(text));
+    });
+};
+
+svn.commit = function (options, callback) {
+    var _this = this,
+        args = ['commit', "-m", options.message].concat(options.files.map(function (file) { return _this.repoRoot + file; }));
+    return this.run('svn', args, callback);
+};
+
+svn.add = function (path, callback) {
+    return this.run('svn', ['add', this.repoRoot + path], callback);
+};
+
+svn.run = function (cmd, args, callback) {
+    var text = "",
+        err = "",
+        proc = spawn(cmd, args);
+
+    proc.stdout.on('data', function (data) {
+        text += data;
+    });
+
+    proc.stderr.on('data', function (data) {
+        err += data;
+    });
+
+    proc.on('close', function (code) {
+        callback(text, err);
+    });
+
+    return function () {
+        this.cancel = function () {
+            proc.kill('SIGHUP');
+        };
+    };
+};
+
+svn._parseLogEntry = function (logText) {
     var array = logText.split("\n"),
         log = {},
         i = 0,
@@ -56,26 +132,18 @@ svn._processLogEntry = function (logText) {
     return log;
 };
 
-svn.command = function (args, callback) {
-    var cmd,
-        text = "";
-
-    cmd = spawn('svn', args.split(" "), { cwd: this.repoRoot });
-
-    cmd.stdout.on('data', function (data) {
-        text += data;
+svn._parseInfo = function (text) {
+    var array = text.replace(/\r\n/g, "\n").split("\n"),
+        info = {};
+    array.forEach(function (line) {
+        var firstColon = line.indexOf(":");
+        info[line.substring(0, firstColon).replace(/\s*/g, "").toLowerCase()] = line.substring(firstColon + 1);
     });
-
-    cmd.stderr.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.on('close', function (code) {
-        callback(text);
-    });
+    return info;
 };
 
-svn._processLog = function (text) {
+
+svn._parseLog = function (text) {
     var array = text.replace(/\r\n/g, "\n").replace(/\t/g, "     ").split("------------------------------------------------------------------------"),
         logList = [],
         item,
@@ -87,7 +155,7 @@ svn._processLog = function (text) {
         changedPaths;
 
     for (i = 1; i < array.length; i += 1) {
-        item = this._processLogEntry(array[i]);
+        item = this._parseLogEntry(array[i]);
         if (item) {
             logList.push(item);
         }
@@ -96,138 +164,10 @@ svn._processLog = function (text) {
     return logList;
 };
 
-svn.diffExternal = function (file, revision, callback) {
-    var path = this.repoRoot + file,
-        cmd,
-        text = "";
-
-    cmd = spawn('svn', ['diff', '-c', revision, path]);
-
-    cmd.stdout.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.stderr.on('data', function (data) {
-    });
-
-    cmd.on('close', function (code) {
-        callback(text.replace(/\t/g, "    "));
-    });
-};
-
-svn.diffLocal = function (file, callback) {
-    var path = this.repoRoot + file,
-        cmd,
-        text = "";
-
-    cmd = spawn('svn', ['diff', path]);
-    // cmd = spawn('svn', ['--diff-cmd', 'diff', '--extensions', '-y', 'diff', path]);
-
-    cmd.stdout.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.stderr.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.on('close', function (code) {
-        callback(text.replace(/\t/g, "    "));
-    });
-};
-
-svn.getFile = function (file, revision, callback) {
-    var path = this.repoRoot + file,
-        cmd,
-        text = "";
-
-    if (revision) {
-        cmd = spawn('svn', ['cat', "-r", revision, path]);
-    } else {
-        cmd = spawn('cat', [path]);
-    }
-
-    cmd.stdout.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.stderr.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.on('close', function (code) {
-        callback(text);
-    });
-};
-
-svn.getInfo = function (callback) {
-    var cmd = spawn('svn', ['info', this.repoRoot]),
-        text = "";
-
-    console.log(this.repoRoot);
-
-    cmd.stdout.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.stderr.on('data', function (data) { 
-        console.log(data);
-    });
-
-    cmd.on('close', function (code) {
-        if (text.length) {
-
-        } else {
-
-        }
-        var array = text.replace(/\r\n/g, "\n").split("\n"),
-            info = {};
-        array.forEach(function (line) {
-            var firstColon = line.indexOf(":");
-            info[line.substring(0, firstColon).replace(/\s*/g, "").toLowerCase()] = line.substring(firstColon + 1);
-        });
-        callback(info);
-    });
-};
-
-svn.getLog = function (limit, callback) {
-    var text = "",
-        cmd = spawn('svn', ['log', this.repoRoot, '-v', '-l', limit || 25, '-r', 'HEAD:1', '--incremental']),
-        scope = this;
-
-    cmd.stdout.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.stderr.on('data', function (data) { });
-
-    cmd.on('close', function (code) {
-        callback(scope._processLog(text));
-    });
-};
-
-svn.revertLocal = function (file, callback) {
-    var text = "",
-        path = this.repoRoot + file,
-        cmd = spawn('svn', ['revert', path]),
-        scope = this;
-
-    cmd.stdout.on('data', function (data) {
-        text += data;
-    });
-
-    cmd.stderr.on('data', function (data) { });
-
-    cmd.on('close', function (code) {
-        callback(text);
-    });
-};
-
-svn._processStatus = function (text) {
+svn._parseStatus = function (text) {
     var split = text.replace(/\r\n/g, "\n").split("\n"),
         changes = [],
         line;
-
 
     for (var i = 0; i < split.length; i += 1) {
         line = split[i];
@@ -235,64 +175,10 @@ svn._processStatus = function (text) {
             changes.push({
                 status: line[0],
                 path: path.resolve(line.substr(1).trim()).replace(this.repoRoot, "")
-            });    
+            });
         }
     }
     return changes;
-};
-
-svn.getStatus = function (callback) {
-    var cmd = spawn('svn', ['status', this.repoRoot]),
-        text = "",
-        scope = this;
-
-    cmd.stdout.on('data', function (data) {
-        if (String(data).length > 1) {
-            text += data;
-        }
-    });
-
-    cmd.stderr.on('data', function (data) { });
-
-    cmd.on('close', function (code) {
-        callback(scope._processStatus(text));
-    });
-};
-
-svn.commit = function (options, callback) {
-    var scope = this,
-        cmd = spawn('svn', ['commit', "-m", options.message].concat(options.files.map(function (file) { return scope.repoRoot + file; }))),
-        text = "";
-
-    cmd.stdout.on('data', function (data) {
-        if (String(data).length > 1) {
-            text += data;
-        }
-    });
-
-    cmd.stderr.on('data', function (data) { });
-
-    cmd.on('close', function (code) {
-        callback(text);
-    });
-};
-
-svn.add = function (path, callback) {
-    var cmd = spawn('svn', ['add', this.repoRoot + path]),
-        text = "",
-        scope = this;
-
-    cmd.stdout.on('data', function (data) {
-        if (String(data).length > 1) {
-            text += data;
-        }
-    });
-
-    cmd.stderr.on('data', function (data) { });
-
-    cmd.on('close', function (code) {
-        callback(text);
-    });
 };
 
 module.exports = function (path, readyCallback) {
