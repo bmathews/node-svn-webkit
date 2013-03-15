@@ -1,0 +1,16 @@
+{
+    "name": "node-svn-webkit",
+    "description": "Simple svn client",
+    "version": "0.1.0",
+    "main": "index.html",
+    "window": {
+        "toolbar": false,
+        // "frame": false,
+        "width": 600,
+        "height": 400
+    },
+    "dependencies": {
+        "underscore": "*",
+        "date-utils": "*"
+    }
+}

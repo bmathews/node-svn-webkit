@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SVN</title>
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/mergely.css" rel="stylesheet">
+        <link href="css/codemirror.css" rel="stylesheet">
+        <script src="lib/jquery-1.9.1.min.js"></script>
+        <script src="lib/codemirror.js"></script>
+        <script src="lib/mode/javascript/javascript.js"></script>
+        <script src="lib/mergely.js"></script>
+        <script>
+            global.$ = $;
+            global.gui = require('nw.gui')
+            var app = require('./src/app.js');
+            window.addEventListener('load', function() { 
+                window.app = new app();
+            }, false);
+            
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
