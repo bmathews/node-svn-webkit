@@ -2,6 +2,7 @@
 "use strict";
 
 var spawn = require('child_process').spawn;
+var path = require('path');
 
 var SVN = function (repoRoot, readyCallback) {
     this.repoRoot = repoRoot;
@@ -21,7 +22,8 @@ svn._processLogEntry = function (logText) {
         log = {},
         i = 0,
         header = array[0],
-        change;
+        change,
+        relativeUrl = this.info.url.replace(this.info.repositoryroot, "");
 
     while (header === "") {
         header = array[i += 1];
@@ -39,7 +41,7 @@ svn._processLogEntry = function (logText) {
         if (change === "") {
             break;
         }
-        log.changedPaths.push(change.trim().replace(this.info.url.replace(this.info.repositoryRoot, ""), ""));
+        log.changedPaths.push(path.normalize(change.trim().replace(relativeUrl, "")));
     }
 
     log.message = "";
@@ -178,10 +180,12 @@ svn.getInfo = function (callback) {
         } else {
 
         }
-        var array = text.replace(/\r\n/g, "\n").replace(/\t/g, "     ").split("\n"),
+        var array = text.replace(/\r\n/g, "\n").split("\n"),
             info = {};
-        info.repositoryRoot = array[2].replace("Repository Root: ", "");
-        info.url = array[1].replace("URL: ", "");
+        array.forEach(function (line) {
+            var firstColon = line.indexOf(":");
+            info[line.substring(0, firstColon).replace(/\s*/g, "").toLowerCase()] = line.substring(firstColon + 1);
+        });
         callback(info);
     });
 };
@@ -220,7 +224,7 @@ svn.revertLocal = function (file, callback) {
 };
 
 svn._processStatus = function (text) {
-    var split = text.replace(this.repoRoot, "").replace(/\r\n/g, "\n").split("\n"),
+    var split = text.replace(/\r\n/g, "\n").split("\n"),
         changes = [],
         line;
 
@@ -230,7 +234,7 @@ svn._processStatus = function (text) {
         if (line.trim().length > 1) {
             changes.push({
                 status: line[0],
-                path: line.substr(1).trim()
+                path: path.resolve(line.substr(1).trim()).replace(this.repoRoot, "")
             });    
         }
     }

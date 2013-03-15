@@ -2,7 +2,8 @@ var _ = require('underscore'),
     EventEmitter = require("events").EventEmitter,
     util = require('util'),
     ChangeItem = require('./changeItem.js'),
-    Popup = require('./popup.js');
+    Popup = require('./popup.js'),
+    path = require('path');
 
 require('date-utils');
 
@@ -201,7 +202,7 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
         label: 'Reveal File',
         click: function () {
             // Open a file in file explorer.
-            gui.Shell.showItemInFolder(_this.svn.repoRoot + change.path);
+            gui.Shell.showItemInFolder(path.resolve(_this.svn.repoRoot + change.path));
         }
     }));
 
@@ -209,7 +210,7 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
         label: 'Edit File',
         click: function () {
             // Open a text file with default text editor.
-            gui.Shell.openItem(_this.svn.repoRoot + change.path);
+            gui.Shell.openItem(path.resolve(_this.svn.repoRoot + change.path));
         }
     }));
 
