@@ -72,6 +72,17 @@ li {
     text-indent: -999px;
 }
 
+.icon-refresh-small {
+    background-image: url(images/refresh-icon.png) !important;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 16px 16px;
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+    text-indent: -999px;
+}
+
 .nav-container .nav-icon.selected {
     box-shadow: inset 0px 1px 8px #111;
     border-top: 1px solid #111;
@@ -169,10 +180,16 @@ textarea, input {
     cursor: pointer;
 }
 
+
 .btn:hover {
     box-shadow: inset 0px 1px 0px #fff, 0px 1px 0px #d3d3d3;
     background-image: -webkit-linear-gradient(top, #fff, #f6f6f6);
     background-color: #fff;
+}
+
+.btn .icon {
+	display: inline-block;
+	margin-left: 8px;
 }
 
 .log-item .author {
@@ -309,7 +326,7 @@ textarea, input {
     border-bottom: 1px solid #6b6b6b;
     box-shadow: 0px 1px 1px rgba(0,0,0,.2);
     /*padding: 6px;*/
-    min-height: 0px;
+    min-height: 30px;
     box-sizing: border-box;
 }
 

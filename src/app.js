@@ -50,6 +50,24 @@ var App = function (app) {
         } else {
             nav.select("Changes");
         }
+
+        _this.svn.isUpToDate(function (upToDate) {
+            toolbar.setSyncState(upToDate);
+        });
+    });
+
+    // Every 10 seconds or so, check to see if we are up to date
+    setInterval(function() {
+        // TODO: Refactor to another method
+        _this.svn.isUpToDate(function (upToDate) {
+            toolbar.setSyncState(upToDate);
+        });
+    }, 10000);
+   
+    $(toolbar).on("svnUpdate", function () {
+        _this.svn.update(function(info, err) {
+            toolbar.setSyncState(!err);
+        });
     });
 };
 

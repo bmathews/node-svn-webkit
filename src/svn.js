@@ -6,16 +6,21 @@ var path = require('path');
 
 var SVN = function (repoRoot, readyCallback) {
     this.repoRoot = repoRoot;
-    var scope = this;
-    this.getInfo(function (info, err) {
-        scope.info = info;
-        if (readyCallback) {
-            readyCallback(info, err);
-        }
-    });
+    this.refreshInfoCache("info", readyCallback);
 };
 
 var svn = SVN.prototype;
+
+// TODO: this function really necessary, all I am saving is the scope[...] call?
+svn.refreshInfoCache = function (infoCacheName, callback, revision) {
+    var scope = this;
+    this.getInfo(function (info, err) {
+        scope[infoCacheName] = info;
+        if (callback) {
+            callback(info, err);
+        }
+    }, revision);
+};
 
 svn.diffExternal = function (file, revision, callback) {
     return this.run('svn', ['diff', '-c', revision, this.repoRoot + file], callback);
@@ -23,6 +28,37 @@ svn.diffExternal = function (file, revision, callback) {
 
 svn.diffLocal = function (file, callback) {
     return this.run('svn', ['diff', this.repoRoot + file], callback);
+};
+
+svn.update = function (callback, revision) {
+    var args = ['update', this.repoRoot];
+    var _this = this;
+    if (revision !== undefined) {
+        args = args.concat(["-r", revision]);
+    }
+    return this.run('svn', args, function (text, err) {
+        if (!err) {
+            // Update the info if we successfully updated
+            _this.refreshInfoCache("info", function (info, err) {
+                callback(!err);
+            });
+        } else {
+            callback(false);
+        }
+    });
+};
+
+svn.isUpToDate = function(callback) {
+    var _this = this;
+    _this.refreshInfoCache("info", function (info, err) {
+        if (!err) {
+            _this.refreshInfoCache("headInfo", function (headInfo, headErr) {
+                callback(!headErr && parseInt(info.revision, 10) >= parseInt(headInfo.revision, 10));
+            }, "HEAD");
+        } else {
+            callback(false);
+        }
+    });
 };
 
 //TODO: ghetto. refactor
@@ -34,9 +70,13 @@ svn.getFile = function (file, revision, callback) {
     return this.run('cat', [path], callback);
 };
 
-svn.getInfo = function (callback) {
+svn.getInfo = function (callback, revision) {
     var _this = this;
-    return this.run('svn', ['info', this.repoRoot], function (text, err) {
+    var args = ['info', this.repoRoot];
+    if (revision) {
+        args = args.concat(["-r", revision]);
+    }
+    return this.run('svn', args, function (text, err) {
         console.log(text);
         console.log(err);
         if (!err) {
