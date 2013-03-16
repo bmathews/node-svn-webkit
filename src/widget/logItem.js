@@ -8,6 +8,7 @@ var LogItem = function (log) {
     var _this = this,
         template = _.template("<div class='author'> <%= author %> </div>" +
                               "<div class='date'><%= date.toFormat('H:MIP') %></div>" +
+                              "<div class='revision'><%= revision %></div>" +
                               "<div class='message'>  <%= message %> </div>"),
         item = $("<li class='log-item'>" + template(log) + "</li>"),
         changeList = $("<div style='display: none;'>");

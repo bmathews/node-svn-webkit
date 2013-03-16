@@ -184,13 +184,23 @@ textarea, input {
 
 .log-item .date {
     color: #888;
-    float: right;
+    position: absolute;
+    right: 10px;
 }
 
 .log-item .message {
     clear: both;
-    padding-right: 5px;
+    padding-right: 50px;
     padding-top: 5px;
+    min-height: 1em;
+}
+
+.log-item .revision {
+    position: absolute;
+    right: 10px;
+    top: 29px;
+    font-size: 11px;
+    color: #aaa;
 }
 
 .change-item {
@@ -198,6 +208,11 @@ textarea, input {
     white-space: nowrap;
     text-overflow: ellipsis;
     color: #777;
+    position: relative;
+}
+
+.log-item {
+    position: relative;
 }
 
 .change-item .status {
