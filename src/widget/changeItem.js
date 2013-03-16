@@ -8,7 +8,6 @@ var ChangeItem = function (change) {
     this.domNode = $("<li title='" + path + "' class='change-item'></li>");
     checkBox = this.checkBox = $("<input type='checkbox' style='margin-right: 10px'>");
     this.domNode.append(this.checkBox);
-    // var frag = window.document.createDocumentFragment();
     this.domNode.append($("<span class='status status-" + status + "'>" + status + "</span>")[0]);
     this.domNode.append($("<span>" + path + "</span>"));
 
@@ -18,7 +17,6 @@ var ChangeItem = function (change) {
 
     this.path = path;
 
-    // this.domNode[0].appendChild(frag);
     this.domNode[0].onclick = function () {
         _this.handleChangeClick(path);
     };

@@ -6,6 +6,8 @@ var DiffViewer = require('./widget/diffViewer.js');
 var Navigation = require('./widget/navigation.js');
 var Toolbar = require('./widget/toolbar.js');
 var Settings = require('./widget/settings.js');
+var SettingsProvider = require('./settingsProvider.js');
+var Popup = require('./widget/popup.js');
 var fs = require('fs');
 var win = gui.Window.get();
 
@@ -38,13 +40,17 @@ var App = function (app) {
     $(window.document.body).append(wrapper);
 
     // var path = window.prompt("SVN PATH???");
-    if (window.localStorage.repo) {
-        _this.svn = new SVN(JSON.parse(window.localStorage.repo), function () {
-        // _this.svn = new SVN("/Users/brianmathews/Documents/workspace/zombies/", function () {
+    _this.svn = new SVN(SettingsProvider.getValue("repo"), function (info, err) {
+        console.log(info);
+        console.log(err);
+        if (err) {
+            new Popup("Error", "Cannot find repository: \n" + SettingsProvider.getValue("repo"), function (conf) {
+                nav.select("Settings");
+            });
+        } else {
             nav.select("Changes");
-        });    
-    }
-    
+        }
+    });
 };
 
 App.prototype.createWrapper = function () {

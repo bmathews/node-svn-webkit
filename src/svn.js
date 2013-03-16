@@ -7,10 +7,10 @@ var path = require('path');
 var SVN = function (repoRoot, readyCallback) {
     this.repoRoot = repoRoot;
     var scope = this;
-    this.getInfo(function (info) {
+    this.getInfo(function (info, err) {
         scope.info = info;
         if (readyCallback) {
-            readyCallback(info);
+            readyCallback(info, err);
         }
     });
 };
@@ -37,7 +37,13 @@ svn.getFile = function (file, revision, callback) {
 svn.getInfo = function (callback) {
     var _this = this;
     return this.run('svn', ['info', this.repoRoot], function (text, err) {
-        callback(_this._parseInfo(text));
+        console.log(text);
+        console.log(err);
+        if (!err) {
+            callback(_this._parseInfo(text));
+        } else {
+            callback(null, err);
+        }
     });
 };
 

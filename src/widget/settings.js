@@ -2,6 +2,7 @@ var _ = require('underscore');
 require('date-utils');
 var EventEmitter = require("events").EventEmitter;
 var util = require('util');
+var SettingsProvider = require('../settingsProvider');
 
 var Settings = function () {
     this.domNode = $("<div class='change-list settings'>");
@@ -13,30 +14,21 @@ var Settings = function () {
 util.inherits(Settings, EventEmitter);
 
 Settings.prototype.createField = function (label, key, def, type) {
-    var field, wrapper, _this = this;
+    var field, wrapper;
     wrapper = $("<label class='change-item' style='display: block'><span>" + label + ": </span></label>");
     if (type === "boolean") {
-        field = $("<input type='checkbox' checked='" + _this.getValue(key, def) + "'>");
+        field = $("<input type='checkbox' checked='" + SettingsProvider.getValue(key, def) + "'>");
         field[0].onclick = function () {
-            _this.setValue(key, field[0].checked);
+            SettingsProvider.setValue(key, field[0].checked);
         };
     } else if (type === "string") {
-        field = $("<input type='text' value='" + _this.getValue(key, def) + "'>");
+        field = $("<input type='text' value='" + SettingsProvider.getValue(key, def) + "'>");
         field[0].onblur = function () {
-            _this.setValue(key, field[0].value);
+            SettingsProvider.setValue(key, field[0].value);
         };
     }
     wrapper.append(field);
     this.domNode.append(wrapper);
-};
-
-Settings.prototype.getValue = function (key, def) {
-    var val = window.localStorage[key];
-    return val !== undefined ? JSON.parse(val) : def;
-};
-
-Settings.prototype.setValue = function (key, value) {
-    return (window.localStorage[key] = JSON.stringify(value));
 };
 
 module.exports = function () {
