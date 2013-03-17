@@ -32,8 +32,6 @@ util.inherits(Popup, EventEmitter);
 
 Popup.prototype.close = function () {
     var _this = this;
-    // _this.domNode.remove();
-    // cover.remove();
     this.cover.addClass("popup-fade-out");
     window.setTimeout(function () {
         _this.cover.remove();
