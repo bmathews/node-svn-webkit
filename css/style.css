@@ -62,7 +62,7 @@ li {
 }
 
 .icon-refresh {
-    background-image: url(images/refresh-icon.png) !important;
+    background-image: url(images/refresh-icon.png);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 16px 16px;
@@ -73,13 +73,13 @@ li {
 }
 
 .icon-refresh-small {
-    background-image: url(images/refresh-icon.png) !important;
+    background-image: url(images/refresh-icon.png);
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: 16px 16px;
+    background-size: 14px 14px !important;
     box-sizing: border-box;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     text-indent: -999px;
 }
 
@@ -258,7 +258,7 @@ textarea, input {
 }
 
 .loading {
-    background-image: url(images/spinner.svg);
+    background-image: url(images/spinner.svg) !important;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 50px 50px;
@@ -322,12 +322,11 @@ textarea, input {
 }
 
 .toolbar {
-    /*background-image: -webkit-linear-gradient(top, #d6d6d6, #b9b9b9);*/
+    background-image: -webkit-linear-gradient(top, #d6d6d6, #b9b9b9);
     border-bottom: 1px solid #6b6b6b;
     box-shadow: 0px 1px 1px rgba(0,0,0,.2);
-    /*padding: 6px;*/
-    min-height: 30px;
-    box-sizing: border-box;
+    padding: 2px;
+    min-height: 28px;
 }
 
 ::-webkit-scrollbar {

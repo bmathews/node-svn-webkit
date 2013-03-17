@@ -61,8 +61,10 @@ var App = function (app) {
         });
     }, 10000);
 
-    $(toolbar).on("svnUpdate", function () {
+    toolbar.on("svnUpdate", function () {
+        toolbar.setUpdateButtonLoading(true);
         _this.svn.update(function(err, info) {
+            toolbar.setUpdateButtonLoading(false);
             toolbar.setSyncState(!err);
         });
     });
