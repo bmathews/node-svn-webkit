@@ -41,8 +41,6 @@ var App = function (app) {
 
     // var path = window.prompt("SVN PATH???");
     _this.svn = new SVN(SettingsProvider.getValue("repo"), function (err, info) {
-        console.log(info);
-        console.log(err);
         if (err) {
             new Popup("Error", "Cannot find repository: \n" + SettingsProvider.getValue("repo"), function (conf) {
                 nav.select("Settings");
@@ -50,7 +48,6 @@ var App = function (app) {
         } else {
             nav.select("Changes");
         }
-
         _this.svn.isUpToDate(function (upToDate) {
             toolbar.setSyncState(upToDate);
         });
@@ -63,9 +60,9 @@ var App = function (app) {
             toolbar.setSyncState(upToDate);
         });
     }, 10000);
-   
+
     $(toolbar).on("svnUpdate", function () {
-        _this.svn.update(function(info, err) {
+        _this.svn.update(function(err, info) {
             toolbar.setSyncState(!err);
         });
     });

@@ -48,7 +48,7 @@ svn.update = function (callback, revision) {
     return this.run('svn', args, function (text, err) {
         if (!err) {
             // Update the info if we successfully updated
-            _this.refreshInfoCache("info", function (info, err) {
+            _this.refreshInfoCache("info", function (err, info) {
                 callback(!err);
             });
         } else {
@@ -59,7 +59,7 @@ svn.update = function (callback, revision) {
 
 svn.isUpToDate = function(callback) {
     var _this = this;
-    _this.refreshInfoCache("info", function (info, err) {
+    _this.refreshInfoCache("info", function (err, info) {
         if (!err) {
             _this.refreshInfoCache("headInfo", function (headInfo, headErr) {
                 callback(!headErr && parseInt(info.revision, 10) >= parseInt(headInfo.revision, 10));
@@ -79,11 +79,14 @@ svn.getFile = function (file, revision, callback) {
     return this.run('cat', [path], callback);
 };
 
-svn.getInfo = function (callback) {
-    var _this = this;
-    return this.run('svn', ['info', this.repoRoot], function (err, text) {
-        console.log(text);
-        console.log(err);
+svn.getInfo = function (callback, revision) {
+    var _this = this,
+        args = ['info', this.repoRoot];
+    if (revision) {
+        args = args.concat(['-r', revision]);
+    }
+
+    return this.run('svn', args, function (err, text) {
         if (!err) {
             callback(null, _this._parseInfo(text));
         } else {
