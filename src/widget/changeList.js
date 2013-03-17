@@ -60,7 +60,7 @@ ChangeList.prototype.showChanges = function () {
         _this.refresh();
     };
 
-    _this.svn.getStatus(function (changes) {
+    _this.svn.status(function (err, changes) {
         _this.domNode.append(commitWrapper);
         _this.domNode.append(messageWrapper);
         _this.domNode.append(wrapper);
@@ -132,7 +132,7 @@ ChangeList.prototype.refresh = function () {
     }
 
     _this.domNode.addClass('loading');
-    _this.svn.getStatus(function (changes) {
+    _this.svn.status(function (err, changes) {
         _this.renderChanges(changes);
         _this.domNode.removeClass('loading');
     });
@@ -224,8 +224,8 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
         click: function () {
             new Popup("Comfirm removal", "This action is not undoable. Are you sure you want to discard all changes to \"<b>" + change.path.substr(change.path.lastIndexOf("/") + 1) + "</b>\"?" , function (conf) {
                 if (conf) {
-                    _this.svn.revertLocal(change.path, function (text) {
-                        console.log("Revert local done: ", text);
+                    _this.svn.revert(change.path, function (err, text) {
+                        console.log("Revert done: ", text);
                         _this.refresh();
                     });
                 }

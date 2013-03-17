@@ -9,7 +9,7 @@ var LogList = function (svn) {
     var _this = this;
     this.svn = svn;
     this.domNode = $("<div class='log-list flex-item loading'>");
-    svn.getLog(JSON.parse(window.localStorage.logLimit), function (logs) {
+    svn.log(JSON.parse(window.localStorage.logLimit), function (err, logs) {
         _this.showLogs(logs);
         _this.domNode.removeClass('loading');
     });

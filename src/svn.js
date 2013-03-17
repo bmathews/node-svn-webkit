@@ -14,12 +14,21 @@ var svn = SVN.prototype;
 // TODO: this function really necessary, all I am saving is the scope[...] call?
 svn.refreshInfoCache = function (infoCacheName, callback, revision) {
     var scope = this;
-    this.getInfo(function (info, err) {
+    this.getInfo(function (err, info) {
         scope[infoCacheName] = info;
         if (callback) {
-            callback(info, err);
+            callback(err, info);
         }
     }, revision);
+};
+
+svn.switchAll = function (rev, callback) {
+    return this.run('svn', ['switch', '-r'], callback);
+};
+
+svn.switchPaths = function (rev, paths, callback) {
+    var _this = this, absPaths = paths.map(function (file) { return _this.repoRoot + file; });
+    return this.run('svn', ['switch', '-r'].concat(absPaths), callback);
 };
 
 svn.diffExternal = function (file, revision, callback) {
@@ -70,38 +79,42 @@ svn.getFile = function (file, revision, callback) {
     return this.run('cat', [path], callback);
 };
 
-svn.getInfo = function (callback, revision) {
+svn.getInfo = function (callback) {
     var _this = this;
-    var args = ['info', this.repoRoot];
-    if (revision) {
-        args = args.concat(["-r", revision]);
-    }
-    return this.run('svn', args, function (text, err) {
+    return this.run('svn', ['info', this.repoRoot], function (err, text) {
         console.log(text);
         console.log(err);
         if (!err) {
-            callback(_this._parseInfo(text));
+            callback(null, _this._parseInfo(text));
         } else {
-            callback(null, err);
+            callback(err, null);
         }
     });
 };
 
-svn.getLog = function (limit, callback) {
+svn.log = function (limit, callback) {
     var _this = this;
-    return this.run('svn', ['log', this.repoRoot, '-v', '-l', limit || 25, '-r', 'HEAD:1', '--incremental'], function (text, err) {
-        callback(_this._parseLog(text));
+    return this.run('svn', ['log', this.repoRoot, '-v', '-l', limit || 25, '-r', 'HEAD:1', '--incremental'], function (err, text) {
+        if (!err) {
+            callback(null, _this._parseLog(text));
+        } else {
+            callback(err, null);
+        }
     });
 };
 
-svn.revertLocal = function (file, callback) {
+svn.revert = function (file, callback) {
     return this.run('svn', ['revert', this.repoRoot + file], callback);
 };
 
-svn.getStatus = function (callback) {
+svn.status = function (callback) {
     var _this = this;
-    return this.run('svn', ['status', this.repoRoot], function (text, err) {
-        callback(_this._parseStatus(text));
+    return this.run('svn', ['status', this.repoRoot], function (err, text) {
+        if (!err) {
+            callback(null, _this._parseStatus(text));
+        } else {
+            callback(err, null);
+        }
     });
 };
 
@@ -125,11 +138,14 @@ svn.run = function (cmd, args, callback) {
     });
 
     proc.stderr.on('data', function (data) {
-        err += data;
+        data += "";
+        if (data.indexOf("Killed by signal 15.") === -1) {
+            err += data;
+        }
     });
 
     proc.on('close', function (code) {
-        callback(text, err);
+        callback(err, text);
     });
 
     return function () {
@@ -190,15 +206,10 @@ svn._parseInfo = function (text) {
 
 
 svn._parseLog = function (text) {
-    var array = text.replace(/\r\n/g, "\n").replace(/\t/g, "     ").split("------------------------------------------------------------------------"),
+    var array = text.replace(/\r\n/g, "\n").split("------------------------------------------------------------------------"),
         logList = [],
         item,
-        i,
-        j,
-        line,
-        header,
-        message,
-        changedPaths;
+        i;
 
     for (i = 1; i < array.length; i += 1) {
         item = this._parseLogEntry(array[i]);

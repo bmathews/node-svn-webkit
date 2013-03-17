@@ -40,7 +40,7 @@ var App = function (app) {
     $(window.document.body).append(wrapper);
 
     // var path = window.prompt("SVN PATH???");
-    _this.svn = new SVN(SettingsProvider.getValue("repo"), function (info, err) {
+    _this.svn = new SVN(SettingsProvider.getValue("repo"), function (err, info) {
         console.log(info);
         console.log(err);
         if (err) {
@@ -169,8 +169,8 @@ App.prototype.showDiff = function (path, revision) {
     var _this = this;
     _this.removeScreen();
     _this.showLoading(true);
-    _this.svn.getFile(path.trim(), revision, function (text1) {
-        _this.svn.getFile(path.trim(), revision ? revision - 1 : "BASE", function (text2) {
+    _this.svn.getFile(path.trim(), revision, function (err, text1) {
+        _this.svn.getFile(path.trim(), revision ? revision - 1 : "BASE", function (err, text2) {
             var diffViewer = new DiffViewer();
             _this.showScreen(diffViewer);
             diffViewer.show(text2, text1);
