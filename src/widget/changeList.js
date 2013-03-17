@@ -8,9 +8,17 @@ var _ = require('underscore'),
 require('date-utils');
 
 var ChangeList = function (svn) {
+    var _this = this, win = gui.Window.get();
     this.svn = svn;
     this.domNode = $("<div class='change-list flex-item loading'>");
     this.showChanges();
+
+    //refresh if focused
+    win.on("focus", function () {
+        if (_this.lastUpdate && _this.lastUpdate.getSecondsBetween(new Date()) >= 30) {
+            _this.refresh();
+        }
+    });
 };
 
 util.inherits(ChangeList, EventEmitter);
@@ -143,6 +151,8 @@ ChangeList.prototype.renderChanges = function (changes) {
         list = $("<ul>"),
         prevDate,
         _this = this;
+
+    _this.lastUpdate = new Date();
 
     _this.items = [];
 
