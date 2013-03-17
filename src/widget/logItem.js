@@ -3,7 +3,7 @@ require('date-utils');
 var EventEmitter = require("events").EventEmitter;
 var util = require('util');
 
-var LogItem = function (log) {
+var LogItem = function (log, isWorkingRev) {
     this.expanded = false;
     var _this = this,
         template = _.template("<div class='author'> <%= author %> </div>" +
@@ -18,27 +18,38 @@ var LogItem = function (log) {
         path = path.substr(1);
             change = $("<div title='" + path + "' class='path'><span class='status status-" + status + "'>" + status + "</span>" + path + "</div>");
 
-        change[0].onclick = function (e) {
-            e.stopPropagation();
+        change.on('click', function (evt) {
+            evt.stopPropagation();
             _this.handleChangeClick(path);
-        };
+        });
+
+        change.on('contextmenu', function (evt) {
+            evt.stopPropagation();
+            //TODO: show history
+        });
+
         changeList.append(change);
     });
+
+    if (isWorkingRev) {
+        item.addClass("working-revision");
+    }
 
     item.append(changeList);
 
     _this.changeListNode = changeList;
 
-    item[0].onclick = function () {
-        _this.handleClick(log, item);
-    };
+    item.on('click', function (evt) {
+        evt.stopPropagation();
+        _this.handleClick(evt, log, item);
+    });
 
     this.domNode = item;
 };
 
 util.inherits(LogItem, EventEmitter);
 
-LogItem.prototype.handleClick = function () {
+LogItem.prototype.handleClick = function (evt, log, item) {
     if (this.expanded) {
         this.changeListNode.slideUp();
     } else {
@@ -51,6 +62,6 @@ LogItem.prototype.handleChangeClick = function (path) {
     this.emit("changeClick", path);
 };
 
-module.exports = function (log) {
-    return new LogItem(log);
+module.exports = function (log, isWorkingRev) {
+    return new LogItem(log, isWorkingRev);
 };

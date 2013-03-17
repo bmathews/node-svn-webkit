@@ -62,7 +62,7 @@ li {
 }
 
 .icon-refresh {
-    background-image: url(images/refresh-icon.png);
+    background-image: url(images/refresh-icon.png) !important;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 16px 16px;
@@ -73,7 +73,7 @@ li {
 }
 
 .icon-refresh-small {
-    background-image: url(images/refresh-icon.png);
+    background-image: url(images/refresh-icon.png) !important;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 14px 14px !important;
@@ -230,6 +230,10 @@ textarea, input {
 
 .log-item {
     position: relative;
+}
+
+.log-item.working-revision {
+    background-image: -webkit-linear-gradient(top, #f4f4e7, #dcdbbc);
 }
 
 .change-item .status {

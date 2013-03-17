@@ -48,12 +48,16 @@ ChangeList.prototype.showChanges = function () {
     };
 
     this.commitButton[0].onclick = function () {
-        _this.svn.commit({
-            message: _this.message[0].value,
-            files: _this.items.filter(function (item) { return item.getChecked(); }).map(function (item) { return item.path; })
-        }, function (text) {
-            console.log(text);
-        });
+        var paths = _this.getSelectedPaths();
+        if (paths.length) {
+            //TODO: Load spinner. Enable/disable
+            _this.svn.commit({
+                message: _this.message[0].value,
+                files: paths
+            }, function (err, text) {
+                console.log(text);
+            });
+        }
     };
 
     this.message[0].oncontextmenu = function (e) {
@@ -234,7 +238,7 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
         click: function () {
             new Popup("Comfirm removal", "This action is not undoable. Are you sure you want to discard all changes to \"<b>" + change.path.substr(change.path.lastIndexOf("/") + 1) + "</b>\"?" , function (conf) {
                 if (conf) {
-                    _this.svn.revert(change.path, function (err, text) {
+                    _this.svn.revertLocal(change.path, function (err, text) {
                         console.log("Revert done: ", text);
                         _this.refresh();
                     });

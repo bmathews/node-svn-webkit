@@ -94,7 +94,7 @@ App.prototype.createToolbar = function () {
 
 App.prototype.removeScreen = function () {
     if (this.currentScreen) {
-         this.currentScreen.domNode.remove();
+         this.currentScreen.domNode.detach();
         delete this.currentScreen;
     }
 };

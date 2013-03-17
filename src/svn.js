@@ -23,13 +23,13 @@ svn.refreshInfoCache = function (infoCacheName, callback, revision) {
 };
 
 svn.switchAll = function (rev, callback) {
-    return this.run('svn', ['switch', '-r'], callback);
+    return this.run('svn', ['switch', this.info.url, this.repoRoot, '-r', rev], callback);
 };
 
-svn.switchPaths = function (rev, paths, callback) {
-    var _this = this, absPaths = paths.map(function (file) { return _this.repoRoot + file; });
-    return this.run('svn', ['switch', '-r'].concat(absPaths), callback);
-};
+// svn.switchPaths = function (rev, paths, callback) {
+//     var _this = this, absPaths = paths.map(function (file) { return _this.repoRoot + file; });
+//     return this.run('svn', ['switch', '-r', rev].concat(absPaths), callback);
+// };
 
 svn.diffExternal = function (file, revision, callback) {
     return this.run('svn', ['diff', '-c', revision, this.repoRoot + file], callback);
@@ -106,8 +106,13 @@ svn.log = function (limit, callback) {
     });
 };
 
-svn.revert = function (file, callback) {
+svn.revertLocal = function (file, callback) {
     return this.run('svn', ['revert', this.repoRoot + file], callback);
+};
+
+//TODO: implement
+svn.revertRevision = function (file, rev, callback) {
+
 };
 
 svn.status = function (callback) {
@@ -136,14 +141,19 @@ svn.run = function (cmd, args, callback) {
         err = "",
         proc = spawn(cmd, args);
 
+    console.warn("Running cmd: ", cmd, args);
+
     proc.stdout.on('data', function (data) {
         text += data;
     });
 
     proc.stderr.on('data', function (data) {
         data += "";
+
+        //ssh warning, ignore
         if (data.indexOf("Killed by signal 15.") === -1) {
             err += data;
+            console.error(data);
         }
     });
 
@@ -202,7 +212,7 @@ svn._parseInfo = function (text) {
         info = {};
     array.forEach(function (line) {
         var firstColon = line.indexOf(":");
-        info[line.substring(0, firstColon).replace(/\s*/g, "").toLowerCase()] = line.substring(firstColon + 1);
+        info[line.substring(0, firstColon).replace(/\s*/g, "").toLowerCase()] = line.substring(firstColon + 1).trim();
     });
     return info;
 };

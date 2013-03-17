@@ -11,24 +11,24 @@ var ChangeItem = function (change) {
     this.domNode.append($("<span class='status status-" + status + "'>" + status + "</span>")[0]);
     this.domNode.append($("<span>" + path + "</span>"));
 
-    checkBox[0].onclick = function (e) {
-        e.stopPropagation(e);
-    };
+    checkBox.on('click', function (evt) {
+        evt.stopPropagation();
+    });
 
     this.path = path;
 
-    this.domNode[0].onclick = function () {
-        _this.handleChangeClick(path);
-    };
+    this.domNode.on('click', function (evt) {
+        _this.handleChangeClick(evt, path);
+    });
 
-    this.domNode[0].oncontextmenu = function (e) {
-        _this.handleContextMenu(e, change);
-    };
+    this.domNode.on('contextmenu', function (evt) {
+        _this.handleContextMenu(evt, change);
+    });
 };
 
 util.inherits(ChangeItem, EventEmitter);
 
-ChangeItem.prototype.handleChangeClick = function (path) {
+ChangeItem.prototype.handleChangeClick = function (evt, path) {
     this.emit("changeClick", path);
 };
 
