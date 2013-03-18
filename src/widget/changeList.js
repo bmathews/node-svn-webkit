@@ -55,7 +55,15 @@ ChangeList.prototype.showChanges = function () {
                 message: _this.message[0].value,
                 files: paths
             }, function (err, text) {
-                console.log(text);
+                if (!err) {
+                    new Popup("Success!", text, function () {
+
+                    });
+                } else {
+                    new Popup("Error!", err, function () {
+
+                    });
+                }
             });
         }
     };
