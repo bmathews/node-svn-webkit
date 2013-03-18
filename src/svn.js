@@ -62,7 +62,6 @@ svn.isUpToDate = function(callback) {
     _this.refreshInfoCache("info", function (err, info) {
         if (!err) {
             _this.refreshInfoCache("headInfo", function (headErr, headInfo) {
-                console.log("Rev: " + info.revision + ", Head Rev: " + headInfo.revision);
                 callback(!headErr && parseInt(info.revision, 10) >= parseInt(headInfo.revision, 10));
             }, "HEAD");
         } else {
