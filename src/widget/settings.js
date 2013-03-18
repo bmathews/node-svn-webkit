@@ -8,6 +8,7 @@ var Settings = function () {
     this.domNode = $("<div class='change-list settings flex-item'>");
     this.createField("Repo", "repo", "", "string");
     this.createField("Log limit", "logLimit", "15", "string");
+    this.createField("Sync Refresh Interval (in seconds)", "syncRefreshInterval", "60", "string");
     this.createField("Boolean test", "boolTest", true, "boolean");
 };
 

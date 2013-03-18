@@ -22,7 +22,7 @@ $(window.document).keypress(function (e) {
 });
 
 var App = function (app) {
-    var _this = this, wrapper, nav, center, centerWrapper, toolbar;
+    var _this = this, wrapper, nav, center, centerWrapper, toolbar, refreshInterval;
 
     wrapper = _this.createWrapper();
     nav = _this.createNavigation();
@@ -35,6 +35,12 @@ var App = function (app) {
     center.addClass("flex-item");
     toolbar.domNode.addClass("flex-item fixed");
     nav.domNode.addClass("flex-item fixed");
+    
+    function updateSyncState () {
+        _this.svn.isUpToDate(function (upToDate) {
+            toolbar.setSyncState(upToDate);
+        });
+    };
 
     this.center.append(toolbar.domNode);
 
@@ -49,18 +55,14 @@ var App = function (app) {
         } else {
             nav.select("Changes");
         }
-        _this.svn.isUpToDate(function (upToDate) {
-            toolbar.setSyncState(upToDate);
-        });
+        updateSyncState();
     });
 
-    // Every 60 seconds or so, check to see if we are up to date
-    setInterval(function() {
-        // TODO: Refactor to another method
-        _this.svn.isUpToDate(function (upToDate) {
-            toolbar.setSyncState(upToDate);
-        });
-    }, 60000);
+    refreshInterval = SettingsProvider.getValue("syncRefreshInterval");
+    refreshInterval = refreshInterval ? parseInt(refreshInterval, 10) * 1000 : 60000;
+    
+    // Update the sync button periodically to see if we are up to date
+    setInterval(updateSyncState, refreshInterval);
 
     toolbar.on("svnUpdate", function () {
         toolbar.setUpdateButtonLoading(true);
