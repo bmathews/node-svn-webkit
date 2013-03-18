@@ -1,6 +1,7 @@
 var SVN = require ('./svn.js');
 var _ = require('underscore');
 var LogList = require('./widget/logList.js');
+var Browse = require('./widget/browse.js');
 var ChangeList = require('./widget/changeList.js');
 var DiffViewer = require('./widget/diffViewer.js');
 var Navigation = require('./widget/navigation.js');
@@ -53,13 +54,13 @@ var App = function (app) {
         });
     });
 
-    // Every 10 seconds or so, check to see if we are up to date
+    // Every 60 seconds or so, check to see if we are up to date
     setInterval(function() {
         // TODO: Refactor to another method
         _this.svn.isUpToDate(function (upToDate) {
             toolbar.setSyncState(upToDate);
         });
-    }, 10000);
+    }, 60000);
 
     toolbar.on("svnUpdate", function () {
         toolbar.setUpdateButtonLoading(true);
@@ -123,6 +124,8 @@ App.prototype.handleNavigate = function (pageName) {
         newScreen = this.showSettings();
     } else if (pageName === "Changes") {
         newScreen = this.showChanges();
+    } else if (pageName === "Browse") {
+        newScreen = this.showBrowse();
     }
 
     this.showScreen(newScreen);
@@ -149,6 +152,16 @@ App.prototype.showChanges = function () {
     }
 
     return _this.changeList;
+};
+
+App.prototype.showBrowse = function () {
+    var _this = this;
+
+    if (!_this.browse) {
+        _this.browse = new Browse(_this.svn);
+    }
+
+    return _this.browse;
 };
 
 App.prototype.showHistory = function () {

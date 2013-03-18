@@ -5,7 +5,7 @@ var util = require('util');
 var SettingsProvider = require('../settingsProvider');
 
 var Settings = function () {
-    this.domNode = $("<div class='change-list settings'>");
+    this.domNode = $("<div class='change-list settings flex-item'>");
     this.createField("Repo", "repo", "", "string");
     this.createField("Log limit", "logLimit", "15", "string");
     this.createField("Boolean test", "boolTest", true, "boolean");
@@ -29,6 +29,7 @@ Settings.prototype.createField = function (label, key, def, type) {
     }
     wrapper.append(field);
     this.domNode.append(wrapper);
+
 };
 
 module.exports = function () {

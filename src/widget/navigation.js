@@ -6,7 +6,7 @@ require('date-utils');
 
 var Navigation = function () {
     var _this = this,
-        items = ["History", "Changes", "Settings"],
+        items = ["History", "Changes", "Settings", "Browse"],
         container = $('<div class="nav-container">');
 
     items.forEach(function (item, index) {

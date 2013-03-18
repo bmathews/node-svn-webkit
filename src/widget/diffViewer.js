@@ -15,11 +15,9 @@ DiffViewer.prototype.show = function (file1, file2) {
 
     mergely.mergely({
         cmsettings: { readOnly: true, lineWrapping: false, autoresize: false, mode: "text/javascript"},
-        resize: function () { 
+        resize: function () {
             var w = $(mergely).parent().width();
             var h = $(mergely).parent().height();
-            // if (this.width) w = this.width(w);
-            // if (this.height) h = this.height(h);
             var content_width = w / 2.0 - 2 * 8 - 8;
             var content_height = h;
             var self = $(mergely);
@@ -29,15 +27,14 @@ DiffViewer.prototype.show = function (file1, file2) {
             self.find('.mergely-column textarea').css({ 'width': content_width + 'px' });
             self.css({ 'width': w + 'px', 'height': h + 'px' });
             if (self.css('display') == 'none') {
-                if (this.fadein != false) self.fadeIn(this.fadein);
+                if (this.fadein !== false) self.fadeIn(this.fadein);
                 else self.show();
                 if (this.loaded) this.loaded();
             }
             if (this.resized) this.resized();
         }
-        
     });
-    
+
     mergely.mergely('lhs', file1);
     mergely.mergely('rhs', file2);
 };
