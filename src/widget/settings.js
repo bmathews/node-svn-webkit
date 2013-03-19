@@ -10,7 +10,7 @@ var Settings = function () {
     this.createField("Log limit", "logLimit", "15", "string");
     this.createField("Sync Refresh Interval (in seconds)", "syncRefreshInterval", "60", "string");
     this.createField("Editor Theme", "editorTheme", "", "select",
-                     ["default", "ambiance", "blackboard", "cobalt", "eclipse", "elegant", "erlang-dark", "lesser-dark", "monokai", "neat", "night", "rubyblue", "solarized dark", "solarized light", "twilight", "vibrant-ink", "xq-dark", "xq-light"]
+                     ["default", "ambiance", "blackboard", "cobalt", "eclipse", "elegant", "erlang-dark", "lesser-dark", "monokai", "neat", "night", "rubyblue", "solarized dark", "solarized light", "twilight", "vibrant-ink", "xq-dark"]
                      );
 };
 

@@ -3,6 +3,63 @@ require('date-utils');
 var EventEmitter = require("events").EventEmitter;
 var util = require('util');
 var SettingsProvider = require('../settingsProvider.js');
+var path = require('path');
+
+var modeMap = {
+  'apl': 'apl',
+  'ast': 'asterisk',
+  'c': 'clike',
+  'cpp': 'clike',
+  'java': 'clike',
+  'cs': 'clike',
+  'scaler': 'clike',
+  'clj': 'clojure',
+  'coffee': 'coffeescript',
+  'lisp': 'commonlisp',
+  'css': 'css',
+  'd': 'd',
+  'diff': 'diff',
+  'ecl': 'ecl',
+  'erlang': 'erlang',
+  'gfm': 'gfm',
+  'go': 'go',
+  'groovy': 'groovy',
+  'haskell': 'haskell',
+  'asp': 'htmlembedded',
+  'html': 'htmlembedded',
+  'htm': 'htmlembedded',
+  'jsp': 'htmlmixed',
+  'http': 'http',
+  'js': 'javascript',
+  'json': 'javascript',
+  'ts': 'javascript',
+  'jinja': 'jinja2',
+  'less': 'less',
+  'lua': 'lua',
+  'md': 'markdown',
+  'nt': 'ntriples',
+  'ocaml': 'ocaml',
+  'pascal': 'pascal',
+  'ext': 'perl',
+  'php': 'php',
+  'properties': 'clike',
+  'py': 'python',
+  'r': 'r',
+  'rst': 'rst',
+  'rb': 'ruby',
+  'rust': 'rust',
+  'sass': 'sass',
+  'scheme': 'scheme',
+  'sh': 'shell',
+  'sql': 'sql',
+  'vb': 'vb',
+  'vbs': 'vbscript',
+  'xml': 'xml',
+  'xquery': 'xquery',
+  'yaml': 'yaml',
+  'z80': 'z80'
+};
+
 
 var DiffViewer = function () {
     this.domNode = $("<div class='file-diff flex-item'>");
@@ -10,12 +67,19 @@ var DiffViewer = function () {
 
 util.inherits(DiffViewer, EventEmitter);
 
-DiffViewer.prototype.show = function (file1, file2) {
+DiffViewer.prototype.show = function (ext, file1, file2) {
     var mergely = $("<div id='mergely'>");
     this.domNode.append(mergely);
 
     mergely.mergely({
-        cmsettings: { readOnly: true, lineWrapping: false, autoresize: false, mode: "text/javascript", theme: SettingsProvider.getValue("editorTheme", "default") },
+        cmsettings: {
+            readOnly: true,
+            lineWrapping: false,
+            autoresize: false,
+            theme: SettingsProvider.getValue("editorTheme", "default"),
+            modeURL: "./lib/mode/%N/%N.js",
+            mode: modeMap[ext]
+        },
         resize: function () {
             var w = $(mergely).parent().width();
             var h = $(mergely).parent().height();
@@ -41,6 +105,8 @@ DiffViewer.prototype.show = function (file1, file2) {
 };
 
 
-module.exports = function (svn, file1, file2) {
-    return new DiffViewer(svn, file1, file2);
+
+
+module.exports = function () {
+    return new DiffViewer();
 };

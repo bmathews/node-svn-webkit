@@ -10,6 +10,7 @@ var Toolbar = require('./widget/toolbar.js');
 var Settings = require('./widget/settings.js');
 var SettingsProvider = require('./settingsProvider.js');
 var Popup = require('./widget/popup.js');
+var pathUtil = require('path');
 var fs = require('fs');
 var win = gui.Window.get();
 
@@ -195,7 +196,7 @@ App.prototype.showDiff = function (path, revision) {
         _this.svn.getFile(path.trim(), revision ? revision - 1 : "BASE", function (err, text2) {
             var diffViewer = new DiffViewer();
             _this.showScreen(diffViewer);
-            diffViewer.show(text2, text1);
+            diffViewer.show(pathUtil.extname(path).substr(1), text2, text1);
             _this.showLoading(false);
         });
     });
