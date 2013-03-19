@@ -3,13 +3,19 @@
 
 var spawn = require('child_process').spawn;
 var path = require('path');
+var util = require('util');
+var EventEmitter = require("events").EventEmitter;
 
 var SVN = function (repoRoot, readyCallback) {
     this.repoRoot = repoRoot;
     this.refreshInfoCache("info", readyCallback);
 };
 
+util.inherits(SVN, EventEmitter);
+
 var svn = SVN.prototype;
+
+
 
 // TODO: this function really necessary, all I am saving is the scope[...] call?
 svn.refreshInfoCache = function (infoCacheName, callback, revision) {
@@ -140,6 +146,8 @@ svn.run = function (cmd, args, callback) {
     var text = "",
         err = "",
         proc = spawn(cmd, args);
+
+    this.emit("cmd", proc, cmd, args);
 
     console.warn("Running cmd: ", cmd, args);
 

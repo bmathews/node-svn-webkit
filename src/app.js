@@ -5,6 +5,7 @@ var Browse = require('./widget/browse.js');
 var ChangeList = require('./widget/changeList.js');
 var DiffViewer = require('./widget/diffViewer.js');
 var Navigation = require('./widget/navigation.js');
+var StatusBar = require('./widget/statusBar.js');
 var Toolbar = require('./widget/toolbar.js');
 var Settings = require('./widget/settings.js');
 var SettingsProvider = require('./settingsProvider.js');
@@ -22,14 +23,15 @@ $(window.document).keypress(function (e) {
 });
 
 var App = function (app) {
-    var _this = this, wrapper, nav, center, centerWrapper, toolbar, refreshInterval;
+    var _this = this, wrapper, nav, center, centerWrapper, toolbar, refreshInterval, statusbar;
 
     wrapper = _this.createWrapper();
     nav = _this.createNavigation();
     center = _this.createCenter();
     toolbar = _this.createToolbar();
 
-    wrapper.append(nav.domNode);
+    wrapper.append(toolbar.domNode);
+    center.append(nav.domNode);
     wrapper.append(center);
 
     center.addClass("flex-item");
@@ -42,7 +44,7 @@ var App = function (app) {
         });
     };
 
-    this.center.append(toolbar.domNode);
+    // this.center.append(toolbar.domNode);
 
     $(window.document.body).append(wrapper);
 
@@ -55,6 +57,8 @@ var App = function (app) {
         } else {
             nav.select("Changes");
         }
+        statusbar = _this.createStatusbar();
+        wrapper.append(statusbar.domNode);
         updateSyncState();
     });
 
@@ -74,7 +78,7 @@ var App = function (app) {
 };
 
 App.prototype.createWrapper = function () {
-    return this.main = $('<div class="flex row" style="width: 100%; height: 100%;">');
+    return this.main = $('<div class="flex column" style="width: 100%; height: 100%;">');
 };
 
 App.prototype.createNavigation = function () {
@@ -88,11 +92,15 @@ App.prototype.createNavigation = function () {
 };
 
 App.prototype.createCenter = function () {
-    return this.center = $('<div class="flex column">');
+    return this.center = $('<div class="flex row">');
 };
 
 App.prototype.createToolbar = function () {
     return this.toolbar = new Toolbar();
+};
+
+App.prototype.createStatusbar = function () {
+    return this.statusbar = new StatusBar(this.svn);
 };
 
 App.prototype.removeScreen = function () {
