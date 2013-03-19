@@ -21,7 +21,8 @@ util.inherits(StatusBar, EventEmitter);
 
 StatusBar.prototype.handleCmdRun = function (proc, cmd, args) {
     var _this = this;
-    var node = $('<div class="icon icon-status loading">' + args[0] + '</div>');
+    var node = $('<div class="icon icon-status loading">' + cmd + " " + (args[0].length > 8 ? args[0].substr(0, 8) + " ..." : args[0])  + '</div>');
+    node.attr('title', cmd + " " + args.join(" "));
     this.status.append(node);
     proc.on('close', function () {
         if (_this.status.children().length === 0) {
