@@ -15,7 +15,7 @@ DiffViewer.prototype.show = function (file1, file2) {
     this.domNode.append(mergely);
 
     mergely.mergely({
-        cmsettings: { readOnly: true, lineWrapping: false, autoresize: false, mode: "text/javascript", theme: "default " + SettingsProvider.getValue("editorTheme", "default") },
+        cmsettings: { readOnly: true, lineWrapping: false, autoresize: false, mode: "text/javascript", theme: SettingsProvider.getValue("editorTheme", "default") },
         resize: function () {
             var w = $(mergely).parent().width();
             var h = $(mergely).parent().height();
@@ -23,7 +23,7 @@ DiffViewer.prototype.show = function (file1, file2) {
             var content_height = h;
             var self = $(mergely);
             self.find('.mergely-column').css({ 'width': content_width + 'px' });
-            self.find('.mergely-column, .mergely-canvas, .mergely-margin, .mergely-column textarea, .CodeMirror-scroll, .cm-s-default').css({ 'height': content_height + 'px' });
+            self.find('.mergely-column, .mergely-canvas, .mergely-margin, .mergely-column textarea, .CodeMirror-scroll, .CodeMirror').css({ 'height': content_height + 'px' });
             self.find('.mergely-canvas').css({ 'height': content_height + 'px' });
             self.find('.mergely-column textarea').css({ 'width': content_width + 'px' });
             self.css({ 'width': w + 'px', 'height': h + 'px' });
