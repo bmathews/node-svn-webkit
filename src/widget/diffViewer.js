@@ -2,6 +2,7 @@ var _ = require('underscore');
 require('date-utils');
 var EventEmitter = require("events").EventEmitter;
 var util = require('util');
+var SettingsProvider = require('../settingsProvider.js');
 
 var DiffViewer = function () {
     this.domNode = $("<div class='file-diff flex-item'>");
@@ -14,7 +15,7 @@ DiffViewer.prototype.show = function (file1, file2) {
     this.domNode.append(mergely);
 
     mergely.mergely({
-        cmsettings: { readOnly: true, lineWrapping: false, autoresize: false, mode: "text/javascript"},
+        cmsettings: { readOnly: true, lineWrapping: false, autoresize: false, mode: "text/javascript", theme: "default " + SettingsProvider.getValue("editorTheme", "default") },
         resize: function () {
             var w = $(mergely).parent().width();
             var h = $(mergely).parent().height();

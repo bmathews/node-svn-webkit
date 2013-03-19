@@ -9,12 +9,14 @@ var Settings = function () {
     this.createField("Repo", "repo", "", "string");
     this.createField("Log limit", "logLimit", "15", "string");
     this.createField("Sync Refresh Interval (in seconds)", "syncRefreshInterval", "60", "string");
-    this.createField("Boolean test", "boolTest", true, "boolean");
+    this.createField("Editor Theme", "editorTheme", "", "select",
+                     ["default", "ambiance", "blackboard", "cobalt", "eclipse", "elegant", "erlang-dark", "lesser-dark", "monokai", "neat", "night", "rubyblue", "solarized dark", "solarized light", "twilight", "vibrant-ink", "xq-dark", "xq-light"]
+                     );
 };
 
 util.inherits(Settings, EventEmitter);
 
-Settings.prototype.createField = function (label, key, def, type) {
+Settings.prototype.createField = function (label, key, def, type, options) {
     var field, wrapper;
     wrapper = $("<label class='change-item' style='display: block'><span>" + label + ": </span></label>");
     if (type === "boolean") {
@@ -27,6 +29,14 @@ Settings.prototype.createField = function (label, key, def, type) {
         field[0].onblur = function () {
             SettingsProvider.setValue(key, field[0].value);
         };
+    } else if (type === "select") {
+        field = $("<select value='" + SettingsProvider.getValue(key, def) + "'>");
+        options.forEach(function (opt) {
+            field.append($('<option>' + opt + '</option>'));
+        });
+        field.on('change', function () {
+            SettingsProvider.setValue(key, options[field[0].selectedIndex]);
+        });
     }
     wrapper.append(field);
     this.domNode.append(wrapper);
