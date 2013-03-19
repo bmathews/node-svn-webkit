@@ -17,22 +17,26 @@ var Settings = function () {
 util.inherits(Settings, EventEmitter);
 
 Settings.prototype.createField = function (label, key, def, type, options) {
-    var field, wrapper;
+    var field, wrapper, currentValue = SettingsProvider.getValue(key, def);
     wrapper = $("<label class='change-item' style='display: block'><span>" + label + ": </span></label>");
     if (type === "boolean") {
-        field = $("<input type='checkbox' checked='" + SettingsProvider.getValue(key, def) + "'>");
+        field = $("<input type='checkbox' checked='" + currentValue + "'>");
         field[0].onclick = function () {
             SettingsProvider.setValue(key, field[0].checked);
         };
     } else if (type === "string") {
-        field = $("<input type='text' value='" + SettingsProvider.getValue(key, def) + "'>");
+        field = $("<input type='text' value='" + currentValue + "'>");
         field[0].onblur = function () {
             SettingsProvider.setValue(key, field[0].value);
         };
     } else if (type === "select") {
-        field = $("<select value='" + SettingsProvider.getValue(key, def) + "'>");
+        field = $("<select>");
         options.forEach(function (opt) {
-            field.append($('<option>' + opt + '</option>'));
+            var el = $('<option>' + opt + '</option>');
+            field.append(el);
+            if (opt === currentValue) {
+                el.attr('selected', true);
+            }
         });
         field.on('change', function () {
             SettingsProvider.setValue(key, options[field[0].selectedIndex]);
