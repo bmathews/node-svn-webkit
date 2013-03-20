@@ -126,6 +126,7 @@ li {
     box-sizing: border-box;
     border-radius: 2px;
     margin: 10px;
+    margin-left: 14px;
     cursor: default;
 }
 
@@ -206,11 +207,13 @@ textarea, input {
 }
 
 .log-item .date {
-    color: #888;
     position: absolute;
-    left: -75px;
+    left: -130px;
     top: 8px;
     font-weight: 700;
+    text-align: right;
+    direction: rtl;
+    width: 100px;
 }
 
 .log-item .message {
