@@ -206,7 +206,7 @@ svn._parseLogEntry = function (logText) {
     log.message = "";
 
     for (i += 1; i < array.length - 1; i += 1) {
-        log.message += array[i].trim();
+        log.message += array[i];
         if (i !== array.length - 2) {
             log.message += "\n";
         }

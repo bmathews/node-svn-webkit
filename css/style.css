@@ -243,8 +243,24 @@ textarea, input {
     position: relative;
 }
 
-.log-item.working-revision {
-    background-image: -webkit-linear-gradient(top, #f4f4e7, #dcdbbc);
+.log-item:before {
+    content: '';
+    display: block;
+    width: 15px;
+    height: 14px;
+    position: absolute;
+    left: -10px;
+    top: 9px;
+    background-image: url(images/log-arrow.png);
+}
+
+.log-item.working-revision .revision {
+    /*background-image: -webkit-linear-gradient(top, #f4f4e7, #dcdbbc);*/
+    font-weight: 700;
+    color: white;
+    background: #ed6a4d;
+    padding: 2px 6px 2px 6px;
+    border-radius: 4px;
 }
 
 .change-item .status {
@@ -358,7 +374,16 @@ textarea, input {
 .toolbar {
     background-image: -webkit-linear-gradient(top, #555, #414141);
     box-shadow: 0px 1px 0px rgba(255,255,255,.1);
-    min-height: 48px;
+    min-height: 28px;
+    padding: 10px;
+}
+
+.toolbar .btn {
+    color: #eee;
+    text-shadow: 0px 1px 0px rgba(0,0,0,.3);
+    border: 1px solid #2a2a2a;
+    box-shadow: inset 0px 1px 0px #676767, 0px 1px 0px #565656;
+    background: transparent;
 }
 
 .statusbar {
