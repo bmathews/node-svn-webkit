@@ -8,7 +8,9 @@ require('date-utils');
 var LogList = function (svn) {
     var _this = this;
     this.svn = svn;
-    this.domNode = $("<div class='log-list flex-item loading'>");
+    this.domNode = $("<div class='log-list-wrapper flex-item loading'>");
+    this.logContainer = $("<div class='log-list flex-item'>");
+    this.domNode.append(this.logContainer);
     svn.log(JSON.parse(window.localStorage.logLimit), function (err, logs) {
         _this.showLogs(logs);
         _this.domNode.removeClass('loading');
@@ -18,7 +20,7 @@ var LogList = function (svn) {
 util.inherits(LogList, EventEmitter);
 
 LogList.prototype.showLogs = function (logs) {
-    var listWrapper = this.domNode,
+    var listWrapper = this.logContainer,
         currentList,
         prevDate,
         _this = this,
@@ -29,7 +31,7 @@ LogList.prototype.showLogs = function (logs) {
         if (!prevDate || prevDate.toYMD().localeCompare(log.date.toYMD()) > 0) {
             dateSplitter = $("<div>");
             dateSplitter.addClass("date-splitter");
-            dateSplitter.html(log.date.toFormat("D MMM, YYYY"));
+            dateSplitter.html(log.date.toFormat("MMMM D, YYYY"));
             listWrapper.append(dateSplitter);
             currentList = $("<ul>");
             listWrapper.append(currentList);
@@ -49,7 +51,6 @@ LogList.prototype.showLogs = function (logs) {
         });
     });
 
-    this.domNode.append(listWrapper);
 };
 
 LogList.prototype.showLogItemContextMenu = function (evt, log) {

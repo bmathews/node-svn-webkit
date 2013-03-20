@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "main": "index.html",
     "window": {
-        // "toolbar": false,
+        "toolbar": false,
         // "frame": false,
         "width": 600,
         "height": 400

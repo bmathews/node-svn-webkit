@@ -10,7 +10,7 @@ body {
     font-family: Arial;
     font-size: 12px;
     color: #555;
-    background-color: #dbdbdb;
+    background-color: #ededed;
     -webkit-app-region: no-drag;
 }
 
@@ -24,33 +24,36 @@ li {
     padding: 0;
 }
 
+.nav-wrapper {
+    padding: 8px;
+}
+
 .nav-container {
-    background-color: #333;
-    box-shadow: inset -1px 1px 3px #222;
-    min-width: 65px !important;
+    background-color: #fcfcfc;
+    border: 1px solid #d5d5d5;
+    border-radius: 3px;
     overflow: hidden;
 }
 
 .nav-container .nav-icon {
     cursor: pointer;
-    color: #aaa;
-    border-bottom: 1px solid #222;
-    border-top: 1px solid #303030;
+    color: #000;
     text-align: center;
-    font-size: 11px;
-    width: 65px;
-    height: 60px;
-    padding-top: 39px;
+    width: 80px;
+    height: 80px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    padding-top: 52px;
     background-repeat: no-repeat;
-    background-position: center 5px;
-    background-size: 34px 30px;
+    background-position: center 10px;
     box-sizing: border-box;
-    opacity: .5;
+    opacity: .3;
+    margin-top: -1px;
 
 }
 
 .icon-settings {
-    background-image: url(images/settings-icon.png);
+    /*background-image: url(images/settings-icon.png);*/
 }
 
 .icon-changes {
@@ -59,6 +62,10 @@ li {
 
 .icon-history {
     background-image: url(images/history-icon.png);
+}
+
+.icon-browse {
+    background-image: url(images/browse-icon.png);
 }
 
 .icon-refresh {
@@ -84,16 +91,27 @@ li {
 }
 
 .nav-container .nav-icon.selected {
-    box-shadow: inset 0px 1px 8px #111;
-    border-top: 1px solid #111;
-    background-color: #222;
-    color: #ddd;
-    opacity: 1;
+    border-top: 1px solid #d5d5d5;
+    border-bottom: 1px solid #d5d5d5;
+    background-color: #fff;
+    color: #000;
+    opacity: .7;
+    font-weight: 700;
 }
 
 
-.log-list, .change-list {
+.change-list {
+    overflow: auto;    
+}
+
+.log-list-wrapper {
     overflow: auto;
+    padding-top: 20px;
+}
+
+.log-list {
+    border-left: 3px solid #d1d1d1;
+    margin-left: 70px;
 }
 
 .file-diff {
@@ -102,27 +120,13 @@ li {
 }
 
 .log-item, .change-item {
-    background-image: -webkit-linear-gradient(top, #f6f6f6, #e6e6e6);
-    border: 1px solid #bcbcbc;
-    box-shadow: inset 0px 1px 0px #fff, 0px 1px 0px #d3d3d3;
-    padding: 8px;
+    background: #fcfcfc;
+    border: 1px solid #d5d5d5;
+    box-shadow: 0px 1px 0px rgba(0,0,0,.01);
     box-sizing: border-box;
-    margin: -1px 6px 0px 6px;
+    border-radius: 2px;
+    margin: 10px;
     cursor: default;
-}
-
-.log-item:only-child, .change-item:only-child {
-    border-radius: 4px;
-}
-
-.log-item:first-child, .change-item:first-child {
-    border-radius: 4px 4px 0px 0px;
-    margin-top: 0px;
-}
-
-.log-item:last-child, .change-item:last-child {
-    border-radius: 0px 0px 4px 4px;
-    margin-bottom: 6px;
 }
 
 .change-item {
@@ -196,26 +200,33 @@ textarea, input {
     font-weight: 700;
     font-size: 13px;
     float: left;
-    color: #333;
+    color: #ed6a4d;
+    margin-top: 8px;
+    margin-left: 8px;
 }
 
 .log-item .date {
     color: #888;
     position: absolute;
-    right: 10px;
+    left: -75px;
+    top: 8px;
+    font-weight: 700;
 }
 
 .log-item .message {
     clear: both;
     padding-right: 50px;
-    padding-top: 5px;
+    padding-top: 10px;
     min-height: 1em;
+    white-space: pre-wrap;
+    margin-left: 8px;
+    margin-bottom: 8px;
 }
 
 .log-item .revision {
     position: absolute;
     right: 10px;
-    top: 29px;
+    top: 10px;
     font-size: 11px;
     color: #aaa;
 }
@@ -245,15 +256,13 @@ textarea, input {
 }
 
 .path {
-    margin: 6px 0px 6px 0px;
+    padding: 8px;
     color: #777;
-        text-overflow:ellipsis;
+    text-overflow:ellipsis;
     overflow:hidden;
     white-space:nowrap;
-}
-
-.path:first-child {
-    margin-top: 12px;
+    background: #f2f2f2;
+    border-top: 1px solid #e6e6e6;
 }
 
 .path:hover {
@@ -282,14 +291,22 @@ textarea, input {
 }
 
 .date-splitter {
-    margin: 28px 0 12px 12px;
+    margin: 28px 0 24px 35px;
     color: #666;
-    font-size: 11px;
+    font-size: 18px;
     font-weight: 700;
+    position: relative;
 }
 
-.date-splitter:first-child {
-    margin-top: 14px;
+.date-splitter:before {
+    content: '';
+    display: block;
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    left: -54px;
+    top: -8px;
+    background-image: url(images/dot.png);
 }
 
 .status {
@@ -298,7 +315,7 @@ textarea, input {
     padding: 0 3px 0 3px;
     font-size: 10px;
     font-weight: bold;
-    margin-right: 2px;
+    margin-right: 4px;
     font-family: tahoma;
     width: 10px;
     display: inline-block;
@@ -338,17 +355,22 @@ textarea, input {
     -webkit-flex-direction: row;
 }
 
-.toolbar, .statusbar {
+.toolbar {
+    background-image: -webkit-linear-gradient(top, #555, #414141);
+    box-shadow: 0px 1px 0px rgba(255,255,255,.1);
+    min-height: 48px;
+}
+
+.statusbar {
     background-image: -webkit-linear-gradient(top, #d6d6d6, #b9b9b9);
     border-bottom: 1px solid #6b6b6b;
-    box-shadow: 0px 1px 1px rgba(0,0,0,.1);
     padding: 2px;
     min-height: 28px;
     z-index: 6;
     background-clip: padding-box; 
 }
 
-.toolbar.statusbar {
+.statusbar {
     border-bottom: none;
     border-top: 1px solid #999;
 box-shadow: inset 0px 1px 0px #eee;
@@ -454,7 +476,8 @@ box-shadow: inset 0px 1px 0px #eee;
 
 .settings label span {
     display: inline-block;
-    min-width: 20%;
+    width: 100px;
+    margin-right: 10px;
 }
 
 .settings label {
@@ -462,7 +485,7 @@ box-shadow: inset 0px 1px 0px #eee;
 }
 
 .settings input {
-    width: 80%;
+    
 }
 
 .CodeMirror pre {

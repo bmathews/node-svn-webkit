@@ -7,7 +7,7 @@ require('date-utils');
 var Navigation = function () {
     var _this = this,
         items = ["History", "Changes", "Settings", "Browse"],
-        container = $('<div class="nav-container">');
+        container = $('<div class="nav-container  flex-item">');
 
     items.forEach(function (item, index) {
         var node = $('<div class="nav-icon icon-' + item.toLowerCase() + '">' + item + '</div>');
@@ -21,7 +21,10 @@ var Navigation = function () {
 
     _this.items = items;
 
-    this.domNode = container;
+    var wrapper = $('<div class="nav-wrapper flex-item flex row fixed">');
+    wrapper.append(container);
+
+    this.domNode = wrapper;
 };
 
 util.inherits(Navigation, EventEmitter);
