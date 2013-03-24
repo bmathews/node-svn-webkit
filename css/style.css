@@ -246,15 +246,38 @@ textarea, input {
     position: relative;
 }
 
-.log-item:before {
-    content: '';
-    display: block;
-    width: 15px;
-    height: 14px;
+.log-item:hover:after {
+    border-right-color: #fff;
+}
+
+.log-item:hover {
+    background: #fff;
+}
+
+.log-item:after, .log-item:before {
+    bottom: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
     position: absolute;
-    left: -10px;
-    top: 9px;
-    background-image: url(images/log-arrow.png);
+    pointer-events: none;
+}
+
+.log-item:after {
+    border-color: rgba(136, 183, 213, 0);
+    border-right-color: #fcfcfc;
+    border-width: 6px;
+    left: -12px;
+    top: 11px;
+}
+.log-item:before {
+    border-color: rgba(194, 225, 245, 0);
+    border-right-color: #d5d5d5;
+    border-width: 7px;
+    left: -12px;
+    margin-left: -2px;
+    top: 10px;
 }
 
 .log-item.working-revision .revision {
@@ -518,4 +541,31 @@ box-shadow: inset 0px 1px 0px #eee;
 
 .CodeMirror pre {
     font-family: "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Monaco, monospace !important;
+}
+
+.toolbar-breadcrumb {
+    display: inline-block;
+    padding: 7px;
+    text-shadow: 0px 1px 0px rgba(0,0,0,.1);
+}
+
+.breadcrumb-node {
+    color: #aaa;
+    margin-right: 5px;
+}
+
+.breadcrumb-node:after {
+    content: '>';
+    margin-left: 4px;
+    display: inline-block;
+    position: relative;
+    color: #aaa;
+}
+
+.breadcrumb-node:last-child:after {
+    content: '';
+    margin-left: 4px;
+    display: inline-block;
+    position: relative;
+    color: #aaa;
 }

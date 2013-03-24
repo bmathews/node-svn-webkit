@@ -6,7 +6,7 @@ var util = require('util');
 var LogItem = function (log, isWorkingRev) {
     this.expanded = false;
     var _this = this,
-        template = _.template("<div class='author'> <%= author %> </div>" +
+        template = _.template("<div class='author'><%= author %></div>" +
                               "<div class='date'><%= date.toFormat('H:MIP') %></div>" +
                               "<div class='revision'><%= revision %></div>" +
                               "<div class='message'><%= message %></div>"),

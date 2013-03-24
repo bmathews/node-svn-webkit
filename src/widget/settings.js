@@ -51,9 +51,9 @@ Settings.prototype.createField = function (label, key, def, type, options) {
         });
         dialog.change(function () {
             if ($(this).val()) {
-                input.html($(this).val() + "/");
-                SettingsProvider.setValue(key, input.html() + "/");
-                dialog.attr('value', input.html() + "/");
+                input.html($(this).val());
+                SettingsProvider.setValue(key, input.html());
+                dialog.attr('value', input.html());
             }
         });
         field.append(browse);

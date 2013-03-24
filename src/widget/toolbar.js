@@ -21,9 +21,30 @@ var Toolbar = function (args) {
         .on("click", function () {
             _this.emit("svnUpdate");
         });
+
+    this.breadCrumb = $('<div class="toolbar-breadcrumb">');
+    container.append(this.breadCrumb);
 };
 
 util.inherits(Toolbar, EventEmitter);
+
+Toolbar.prototype.addBreadCrumbNode = function (id, text, cb) {
+    var node = $('<span rel="' + id + '"class="breadcrumb-node">').html(text);
+    node.on('click', function (e) {
+        cb(e, id, text);
+    });
+    this.breadCrumb.append(node);
+};
+
+Toolbar.prototype.removeBreadcrumbNodesAfter = function (id) {
+    var node = this.breadCrumb.find('span[rel=' + id + ']'),
+        index = Array.prototype.slice.call( this.breadCrumb[0].children ).indexOf(node[0]),
+        childrenLength = this.breadCrumb[0].children.length;
+
+    for (var i = childrenLength; i > index; i -= 1) {
+        $(this.breadCrumb[0].children[i]).remove();
+    }
+};
 
 Toolbar.prototype._updateSyncButton = function() {
     $('.syncButton .btnText', this.domNode).text(this._syncState ? "Branch In Sync" : "Sync Branch");

@@ -38,7 +38,13 @@ var App = function (app) {
     center.addClass("flex-item");
     toolbar.domNode.addClass("flex-item fixed");
     nav.domNode.addClass("flex-item fixed");
+
+    toolbar.addBreadCrumbNode("repositories", "Repositories", function (e, id) {
+        toolbar.removeBreadcrumbNodesAfter(id);
+    });
+
     
+
     function updateSyncState () {
         _this.svn.isUpToDate(function (upToDate) {
             toolbar.setSyncState(upToDate);
@@ -58,6 +64,9 @@ var App = function (app) {
         } else {
             nav.select("Changes");
         }
+        var repo = SettingsProvider.getValue("repo", "");
+        repo = repo.substr(repo.lastIndexOf("/") + 1);
+        toolbar.addBreadCrumbNode(repo, repo, function () { });
         statusbar = _this.createStatusbar();
         wrapper.append(statusbar.domNode);
         updateSyncState();
