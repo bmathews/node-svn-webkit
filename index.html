@@ -47,7 +47,7 @@
             //show dev tools with ctrl+alt + j
             $(window.document).keypress(function (e) {
                 if (e.altKey && e.ctrlKey && e.which === 10) {
-                    win.showDevTools();
+                    global.gui.Window.get().showDevTools();
                 }
             });
         </script>

@@ -4,6 +4,7 @@ var Router = require('./router.js');
 var LogList = require('./widget/logList.js');
 var Browse = require('./widget/browse.js');
 var ChangeList = require('./widget/changeList.js');
+var RepoList = require('./widget/repoList.js');
 var DiffViewer = require('./widget/diffViewer.js');
 var Navigation = require('./widget/navigation.js');
 var StatusBar = require('./widget/statusBar.js');
@@ -184,6 +185,16 @@ App.prototype.showDiffExternal = function (path, revision) {
             _this.showLoading(false);
         });
     });
+};
+
+App.prototype.showRepositories = function () {
+    var _this = this;
+
+    if (!_this.repoList) {
+        _this.repoList = new RepoList(_this.svn);
+    }
+
+    this.showScreen(_this.repoList);
 };
 
 module.exports = function () {
