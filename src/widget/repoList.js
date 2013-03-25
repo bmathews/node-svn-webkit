@@ -12,13 +12,13 @@ var RepoList = function (svn) {
 
     this.repoList = SettingsProvider.getValue("repoList", []);
 
-    this.addButton = $('<button class="btn"><div class="icon icon-add"></div>Add Repo</button>')
+    this.addButton = $('<button class="btn"><div class="icon-plus-sign"></div>Add Repo</button>')
         .appendTo(this.logContainer)
         .on('click', function () {
             _this.handleAddClick();
         });
 
-    this.checkoutButton = $('<button class="btn"><div class="icon icon-checkout"></div>Checkout Repo</button>')
+    this.checkoutButton = $('<button class="btn"><div class="icon-download-alt"></div>Checkout Repo</button>')
         .appendTo(this.logContainer)
         .on('click', function () {
             _this.handleCheckoutClick();
@@ -93,14 +93,14 @@ RepoList.prototype.showRepoList = function (repoList) {
     _.each(repoList, function (repo) {
         repoNode = $('<div class="path repo-item"><span class="repoName">' + repo.name + '</span><span class="repoPath">' + repo.path + '</span></div>');
 
-        editButton = $('<button style="float: right;" class="btn icon icon-edit">')
+        editButton = $('<button style="float: right;" class="btn"><i class="icon-pencil"></i></button>')
             .appendTo(repoNode)
             .on('click', function (e) {
                 e.stopPropagation();
                 _this.handleEditClick(repo);
             });
 
-        deleteButton = $('<button style="float: right;" class="btn icon icon-delete">')
+        deleteButton = $('<button style="float: right;" class="btn"><i class="icon-trash"></i></button>')
             .appendTo(repoNode)
             .on('click', function (e) {
                 e.stopPropagation();

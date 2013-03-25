@@ -28,7 +28,7 @@ ChangeList.prototype.showChanges = function () {
     var _this = this;
     var header = $('<div class="commit-wrapper"></div>');
 
-    this.refreshButton = $('<button class="btn icon icon-refresh">Refresh</button>');
+    this.refreshButton = $('<button class="btn"><i class="icon-refresh"></i></button>');
     header.append(this.refreshButton);
     header.append($('<span class="title" style="margin-left: 8px;">Uncommited Changes</span>'));
     this.commitButton = $('<button class="btn" style="float: right;">Commit</button>');

@@ -9,7 +9,7 @@ var Navigation = function () {
         container = this.container = $('<div class="nav-container  flex-item">');
 
     items.forEach(function (item, index) {
-        var node = $('<div class="nav-icon icon-' + item.toLowerCase() + '">' + item + '</div>');
+        var node = $('<div class="nav-icon nav-icon-' + item.toLowerCase() + '">' + item + '</div>');
 
         node.click(function (e) {
             _this.select(item, false);
