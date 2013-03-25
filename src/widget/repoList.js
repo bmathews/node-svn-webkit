@@ -7,23 +7,24 @@ var _ = require('underscore'),
 var RepoList = function (svn) {
     var _this = this;
     this.svn = svn;
-    this.domNode = $("<div class='log-list-wrapper flex-item'>");
-    this.logContainer = $("<div class='log-list'>");
+    this.domNode = $("<div class='repo-list-wrapper flex-item'>");
+    this.logContainer = $("<div class='repo-list'>");
 
     this.repoList = SettingsProvider.getValue("repoList", []);
-    this.showRepoList(this.repoList);
 
     this.addButton = $('<button class="btn"><div class="icon icon-add"></div>Add Repo</button>')
-        .appendTo(this.domNode)
+        .appendTo(this.logContainer)
         .on('click', function () {
             _this.handleAddClick();
         });
 
     this.checkoutButton = $('<button class="btn"><div class="icon icon-checkout"></div>Checkout Repo</button>')
-        .appendTo(this.domNode)
+        .appendTo(this.logContainer)
         .on('click', function () {
             _this.handleCheckoutClick();
         });
+
+    this.showRepoList(this.repoList);
 
     this.domNode.append(this.logContainer);
 };
@@ -90,16 +91,16 @@ RepoList.prototype.showRepoList = function (repoList) {
     var _this = this, listNode = this.logContainer, repoNode, editButton, deleteButton;
 
     _.each(repoList, function (repo) {
-        repoNode = $('<div class="log-item"><span class="repoName">' + repo.name + '</span><span class="repoPath">' + repo.path + '</span></div>');
+        repoNode = $('<div class="path repo-item"><span class="repoName">' + repo.name + '</span><span class="repoPath">' + repo.path + '</span></div>');
 
-        editButton = $('<button class="btn icon icon-edit">')
+        editButton = $('<button style="float: right;" class="btn icon icon-edit">')
             .appendTo(repoNode)
             .on('click', function (e) {
                 e.stopPropagation();
                 _this.handleEditClick(repo);
             });
 
-        deleteButton = $('<button class="btn icon icon-delete">')
+        deleteButton = $('<button style="float: right;" class="btn icon icon-delete">')
             .appendTo(repoNode)
             .on('click', function (e) {
                 e.stopPropagation();

@@ -126,7 +126,7 @@ li {
     overflow: hidden;
 }
 
-.log-item, .change-item {
+.log-item, .repo-list {
     background: #fcfcfc;
     border: 1px solid #d5d5d5;
     box-shadow: 0px 1px 0px rgba(0,0,0,.01);
@@ -137,11 +137,18 @@ li {
     cursor: default;
 }
 
+.repoName {
+    font-weight: 700;
+    margin-right: 10px;
+    margin-top: 8px;
+    display: inline-block;
+}
+
 .change-list {
     clear: both;
 }
 
-.change-list .path {
+.change-list .path, .repo-list .path {
     background: #fff;
 }
 
