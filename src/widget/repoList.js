@@ -90,7 +90,8 @@ RepoList.prototype.handleEditClick = function (repo) {
 };
 
 RepoList.prototype.handleRepoClick = function (repo) {
-    SettingsProvider.setValue("repo", repo.path);
+    SettingsProvider.setValue("repo", repo);
+    global.App.router.showRepo(repo);
 };
 
 RepoList.prototype.saveRepoList = function () {

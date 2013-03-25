@@ -23,28 +23,16 @@ var App = function () {
 
     var _this = this, refreshInterval;
 
-
     this.router = new Router(this);
 
     this.createAppView();
 
-    function updateSyncState () {
-        _this.svn.isUpToDate(function (upToDate) {
-            _this.toolbar.setSyncState(upToDate);
-        });
+    var currentRepo = SettingsProvider.getValue('repo');
+    if (currentRepo && currentRepo.path) {
+        this.setRepo(currentRepo);
+    } else {
+        this.router.showRepositories();
     }
-
-    _this.svn = new SVN(SettingsProvider.getValue("repo"), function (err, info) {
-        _this.statusbar = _this.createStatusbar(_this.svn);
-        _this.wrapper.append(_this.statusbar.domNode);
-        updateSyncState();
-    });
-
-    refreshInterval = SettingsProvider.getValue("syncRefreshInterval");
-    refreshInterval = refreshInterval ? parseInt(refreshInterval, 10) * 1000 : 60000;
-
-    // Update the sync button periodically to see if we are up to date
-    setInterval(updateSyncState, refreshInterval);
 
     this.toolbar.on("svnUpdate", function () {
         _this.toolbar.setUpdateButtonLoading(true);
@@ -55,6 +43,48 @@ var App = function () {
     });
 };
 
+App.prototype.setRepo = function (repo) {
+    var _this = this;
+
+    function updateSyncState () {
+        _this.svn.isUpToDate(function (upToDate) {
+            _this.toolbar.setSyncState(upToDate);
+        });
+    }
+
+    refreshInterval = SettingsProvider.getValue("syncRefreshInterval");
+    refreshInterval = refreshInterval ? parseInt(refreshInterval, 10) * 1000 : 60000;
+
+    _this.svn = new SVN(repo.path, function (err, info) {
+        if (!err) {
+            if (_this.statusbar) {
+                _this.statusbar.domNode.remove();
+            }
+            if (_this.browse) {
+                _this.browse.domNode.remove();
+                delete _this.browse;
+            }
+            if (_this.logList) {
+                _this.logList.domNode.remove();
+                delete _this.logList;   
+            }
+            if (_this.changeList) {
+                _this.changeList.domNode.remove();
+                delete _this.changeList;   
+            }
+            _this.statusbar = _this.createStatusbar(_this.svn);
+            _this.statusbar.setRepo(repo);
+            _this.wrapper.append(_this.statusbar.domNode);
+            _this.router.showHistory();
+            updateSyncState();
+
+            // Update the sync button periodically to see if we are up to date
+            setInterval(updateSyncState, refreshInterval);
+        } else {
+            window.confirm("Error: \n\n", err);
+        }
+    });
+};
 
 App.prototype.createAppView = function () {
     var _this = this, wrapper, nav, center, centerWrapper, toolbar, refreshInterval;

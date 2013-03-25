@@ -10,7 +10,10 @@ var StatusBar = function (svn) {
 
     this.domNode = container;
     this.status = $('<div>');
+    this.repoName = $('<div>');
     this.domNode.append(this.status);
+    this.domNode.append(this.repoName);
+    
 
     svn.on('cmd', function (proc, cmd, args) {
         _this.handleCmdRun(proc, cmd, args);
@@ -31,6 +34,10 @@ StatusBar.prototype.handleCmdRun = function (proc, cmd, args) {
             node.remove();
         }
     });
+};
+
+StatusBar.prototype.setRepo = function (repo) {
+    this.repoName.html(repo.name);
 };
 
 module.exports = function (svn) {

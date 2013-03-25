@@ -6,7 +6,7 @@ var SettingsProvider = require('../settingsProvider');
 
 var Settings = function () {
     this.domNode = $("<div class='change-list settings flex-item'>");
-    this.createField("Repo", "repo", "", "file");
+    // this.createField("Repo", "repo", "", "file");
     this.createField("Log limit", "logLimit", "15", "string");
     this.createField("Refresh Rate (s)", "syncRefreshInterval", "60", "string");
     this.createField("Editor Theme", "editorTheme", "", "select",

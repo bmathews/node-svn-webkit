@@ -36,13 +36,13 @@ Router.prototype._pushHistory = function (func, args) {
             historyStack = _.last(historyStack, historySize);
         }
     }
-    this.doPushHistory = true;
 };
 
 Router.prototype._execHistory = function (cur) {
     this.doPushHistory = false;
     var item = historyStack[cur];
     item.func.apply(this, item.args);
+    this.doPushHistory = true;
 };
 
 Router.prototype.back = function () {
@@ -57,6 +57,11 @@ Router.prototype.forward = function () {
         current += 1;
         this._execHistory(current);
     }
+};
+
+Router.prototype.showRepo = function (repo) {
+    this.app.setRepo(repo);
+    this._pushHistory(this.showRepo, repo);
 };
 
 Router.prototype.showRepositories = function () {
