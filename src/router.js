@@ -1,5 +1,6 @@
 var EventEmitter = require("events").EventEmitter;
 var util = require('util');
+var _ = require("underscore");
 
 var Router = function (app) {
     var _this = this;
