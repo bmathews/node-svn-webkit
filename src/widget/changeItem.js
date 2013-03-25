@@ -5,7 +5,7 @@ var util = require('util');
 
 var ChangeItem = function (change) {
     var status = change.status, path = change.path, checkBox, _this = this;
-    this.domNode = $("<li title='" + path + "' class='change-item'></li>");
+    this.domNode = $("<li title='" + path + "' class='path'></li>");
     checkBox = this.checkBox = $("<input type='checkbox' style='margin-right: 10px'>");
     this.domNode.append(this.checkBox);
     this.domNode.append($("<span class='status status-" + status + "'>" + status + "</span>")[0]);

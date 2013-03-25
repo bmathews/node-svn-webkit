@@ -10,7 +10,7 @@ require('date-utils');
 var ChangeList = function (svn) {
     var _this = this, win = gui.Window.get();
     this.svn = svn;
-    this.domNode = $("<div class='change-list flex-item loading'>");
+    this.domNode = $("<div class='changes flex-item loading'>");
     this.showChanges();
 
     //refresh if focused
@@ -26,22 +26,26 @@ util.inherits(ChangeList, EventEmitter);
 ChangeList.prototype.showChanges = function () {
 
     var _this = this;
-    var commitWrapper = $('<div class="commit-wrapper panel"></div>');
+    var header = $('<div class="commit-wrapper"></div>');
 
     this.refreshButton = $('<button class="btn icon icon-refresh">Refresh</button>');
-    commitWrapper.append(this.refreshButton);
-    commitWrapper.append($('<span class="title" style="margin-left: 8px;">Uncommited Changes<span>'));
+    header.append(this.refreshButton);
+    header.append($('<span class="title" style="margin-left: 8px;">Uncommited Changes</span>'));
     this.commitButton = $('<button class="btn" style="float: right;">Commit</button>');
-    commitWrapper.append(this.commitButton);
-    var messageWrapper = $('<div class="panel" style="margin-top: -9px; border-radius: 0px 0px 4px 4px; position: relative; height: 75px; ">');
+    header.append(this.commitButton);
+
+
     this.message = $("<textarea class='commit-message' placeholder='Commit message'>");
-    messageWrapper.append(this.message);
+
+
+    var changesWrapper = this.changesWrapper = $('<div class="panel">');
+    var changesTools = $('<div class="changes-tools">');
     this.selectAllCheckBox = $("<input type='checkbox' style='margin-top: 1px; vertical-align: top; float: left; margin-right: 6px;'>");
-    var wrapper = $('<div class="panel" style="font-weight: 700;">');
     var label = $('<label></label>');
-    wrapper.append(label);
     label.append(this.selectAllCheckBox);
     label.append($('<span>Select All</span>'));
+    changesTools.append(label);
+    changesWrapper.append(changesTools);
 
     this.selectAllCheckBox[0].onclick = function (e) {
         _this.selectAll(_this.selectAllCheckBox[0].checked);
@@ -81,10 +85,10 @@ ChangeList.prototype.showChanges = function () {
     };
 
     _this.svn.status(function (err, changes) {
-        _this.domNode.append(commitWrapper);
-        _this.domNode.append(messageWrapper);
-        _this.domNode.append(wrapper);
-        wrapper.append($("<div style='float: right; color: #aaa; font-size: 11px; margin-top: 1px;'>" + changes.length + " local changes</div>"));
+        _this.domNode.append(header);
+        _this.domNode.append(_this.message);
+        _this.domNode.append(changesWrapper);
+        changesTools.append($("<div style='float: right; color: #aaa; font-size: 11px; margin-top: 1px;'>" + changes.length + " local changes</div>"));
         _this.renderChanges(changes);
         _this.domNode.removeClass('loading');
     });
@@ -153,14 +157,15 @@ ChangeList.prototype.refresh = function () {
 
     _this.domNode.addClass('loading');
     _this.svn.status(function (err, changes) {
+        //TODO: Preserve checked items somehow
         _this.renderChanges(changes);
         _this.domNode.removeClass('loading');
     });
 };
 
 ChangeList.prototype.renderChanges = function (changes) {
-    var listWrapper = this.domNode,
-        list = $("<ul>"),
+    var listWrapper = this.changesWrapper,
+        list = $("<ul class='change-list'>"),
         prevDate,
         _this = this;
 
@@ -183,8 +188,6 @@ ChangeList.prototype.renderChanges = function (changes) {
     _this.list = list;
 
     listWrapper.append(list);
-
-    this.domNode.append(listWrapper);
 };
 
 ChangeList.prototype.selectAll = function (checked) {
@@ -238,6 +241,13 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
 
     menu.append(new gui.MenuItem({
         type: "separator"
+    }));
+
+    menu.append(new gui.MenuItem({
+        label: 'Show History',
+        click: function () {
+            global.App.router.showHistory(change.path);
+        }
     }));
 
     menu.append(new gui.MenuItem({

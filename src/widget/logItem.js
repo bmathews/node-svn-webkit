@@ -13,22 +13,22 @@ var LogItem = function (log, isWorkingRev) {
         item = $("<li class='log-item'>" + template(log) + "</li>"),
         changeList = $("<div style='display: none;'>");
 
-    log.changedPaths.forEach(function (path) {
-        var status = path.substr(0, 1), change;
-        path = path.substr(1);
-            change = $("<div title='" + path + "' class='path'><span class='status status-" + status + "'>" + status + "</span>" + path + "</div>");
+    log.changes.forEach(function (change) {
+        var status = change.status,
+            path = change.path,
+            changeNode = $("<div title='" + path + "' class='path'><span class='status status-" + status + "'>" + status + "</span>" + path + "</div>");
 
-        change.on('click', function (evt) {
+        changeNode.on('click', function (evt) {
             evt.stopPropagation();
             _this.handleChangeClick(path);
         });
 
-        change.on('contextmenu', function (evt) {
+        changeNode.on('contextmenu', function (evt) {
             evt.stopPropagation();
-            //TODO: show history
+            _this.handleChangeContextMenu(evt, path);
         });
 
-        changeList.append(change);
+        changeList.append(changeNode);
     });
 
     if (isWorkingRev) {
@@ -48,6 +48,19 @@ var LogItem = function (log, isWorkingRev) {
 };
 
 util.inherits(LogItem, EventEmitter);
+
+LogItem.prototype.handleChangeContextMenu = function (evt, path) {
+    var menu = new gui.Menu();
+
+    menu.append(new gui.MenuItem({
+        label: 'Show History',
+        click: function () {
+            global.App.router.showHistory(path);
+        }
+    }));
+
+    menu.popup(evt.clientX, evt.clientY);
+};
 
 LogItem.prototype.handleClick = function (evt, log, item) {
     if (this.expanded) {

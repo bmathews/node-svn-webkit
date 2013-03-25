@@ -4,9 +4,9 @@ var EventEmitter = require("events").EventEmitter;
 var util = require('util');
 
 var Browse = function (svn) {
-    this.domNode = $("<div class='change-list browse flex-item'>");
+    this.domNode = $("<div class='browse flex-item'>");
 
-    var tree = $('<div>');
+    var tree = $('<div class="panel">');
 
     tree.fileTree({ root: svn.repoRoot }, function (path) {
         console.log(path);

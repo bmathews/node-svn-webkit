@@ -101,9 +101,9 @@ svn.getInfo = function (callback, revision) {
     });
 };
 
-svn.log = function (limit, callback) {
+svn.log = function (path, limit, callback) {
     var _this = this;
-    return this.run('svn', ['log', this.repoRoot, '-v', '-l', limit || 25, '-r', 'HEAD:1', '--incremental'], function (err, text) {
+    return this.run('svn', ['log', path ? this.repoRoot + path : this.repoRoot, '-v', '-l', limit || 25, '-r', 'HEAD:1', '--incremental'], function (err, text) {
         if (!err) {
             callback(null, _this._parseLog(text));
         } else {
@@ -181,7 +181,7 @@ svn._parseLogEntry = function (logText) {
         log = {},
         i = 0,
         header = array[0],
-        change,
+        changeString,
         relativeUrl = this.info.url.replace(this.info.repositoryroot, "");
 
     while (header === "") {
@@ -193,14 +193,17 @@ svn._parseLogEntry = function (logText) {
     log.revision = header[0].substr(1);
     log.author = header[1];
     log.date = new Date(header[2]);
-    log.changedPaths = [];
+    log.changes = [];
 
     for (i = i + 2; i < array.length; i += 1) {
-        change = array[i];
-        if (change === "") {
+        changeString = array[i].trim();
+        if (changeString === "") {
             break;
         }
-        log.changedPaths.push(path.normalize(change.trim().replace(relativeUrl, "")));
+        log.changes.push({
+            path: path.normalize(changeString.substr(1).trim().replace(relativeUrl, "")),
+            status: changeString.substr(0, 1)
+        });
     }
 
     log.message = "";

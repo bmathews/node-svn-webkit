@@ -5,15 +5,17 @@ var _ = require('underscore'),
 
 require('date-utils');
 
-var LogList = function (svn) {
+var LogList = function (svn, path) {
     var _this = this;
     this.svn = svn;
     this.domNode = $("<div class='log-list-wrapper flex-item loading'>");
     this.logContainer = $("<div class='log-list'>");
     this.domNode.append(this.logContainer);
-    svn.log(JSON.parse(window.localStorage.logLimit), function (err, logs) {
-        _this.showLogs(logs);
+    svn.log(path, JSON.parse(window.localStorage.logLimit), function (err, logs) {
         _this.domNode.removeClass('loading');
+        if (!err) {
+            _this.showLogs(logs);
+        }
     });
 };
 
@@ -90,6 +92,6 @@ LogList.prototype.handleChangeClick = function (path, revision) {
     this.emit("changeClick", path, revision);
 };
 
-module.exports = function (svn) {
-    return new LogList(svn);
+module.exports = function (svn, path) {
+    return new LogList(svn, path);
 };

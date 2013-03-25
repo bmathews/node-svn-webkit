@@ -37,11 +37,19 @@
         <script>
             global.$ = $;
             global.gui = require('nw.gui')
+
             var app = require('./src/app.js');
+
             window.addEventListener('load', function() { 
-                window.app = new app();
+                new app();
             }, false);
-            
+
+            //show dev tools with ctrl+alt + j
+            $(window.document).keypress(function (e) {
+                if (e.altKey && e.ctrlKey && e.which === 10) {
+                    win.showDevTools();
+                }
+            });
         </script>
     </head>
     <body>

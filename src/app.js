@@ -1,5 +1,6 @@
 var SVN = require ('./svn.js');
 var _ = require('underscore');
+var Router = require('./router.js');
 var LogList = require('./widget/logList.js');
 var Browse = require('./widget/browse.js');
 var ChangeList = require('./widget/changeList.js');
@@ -16,20 +17,51 @@ var win = gui.Window.get();
 
 require('date-utils');
 
-$(window.document).keypress(function (e) {
-    console.log("keypress");
-    if (e.altKey && e.ctrlKey && e.which === 10) {
-        win.showDevTools();
+var App = function () {
+    global.App = this;
+
+    var _this = this, refreshInterval;
+
+
+    this.router = new Router(this);
+
+    this.createAppView();
+
+    function updateSyncState () {
+        _this.svn.isUpToDate(function (upToDate) {
+            _this.toolbar.setSyncState(upToDate);
+        });
     }
-});
 
-var App = function (app) {
-    var _this = this, wrapper, nav, center, centerWrapper, toolbar, refreshInterval, statusbar;
+    _this.svn = new SVN(SettingsProvider.getValue("repo"), function (err, info) {
+        _this.statusbar = _this.createStatusbar(_this.svn);
+        _this.wrapper.append(_this.statusbar.domNode);
+        updateSyncState();
+    });
 
-    wrapper = _this.createWrapper();
-    nav = _this.createNavigation();
-    center = _this.createCenter();
-    toolbar = _this.createToolbar();
+    refreshInterval = SettingsProvider.getValue("syncRefreshInterval");
+    refreshInterval = refreshInterval ? parseInt(refreshInterval, 10) * 1000 : 60000;
+
+    // Update the sync button periodically to see if we are up to date
+    setInterval(updateSyncState, refreshInterval);
+
+    this.toolbar.on("svnUpdate", function () {
+        _this.toolbar.setUpdateButtonLoading(true);
+        _this.svn.update(function(err, info) {
+            _this.toolbar.setUpdateButtonLoading(false);
+            _this.toolbar.setSyncState(!err);
+        });
+    });
+};
+
+
+App.prototype.createAppView = function () {
+    var _this = this, wrapper, nav, center, centerWrapper, toolbar, refreshInterval;
+
+    wrapper = this.wrapper = this.createWrapper();
+    nav = this.nav = this.createNavigation();
+    center = this.center = this.createCenter();
+    toolbar = this.toolbar = this.createToolbar();
 
     wrapper.append(toolbar.domNode);
     center.append(nav.domNode);
@@ -39,78 +71,40 @@ var App = function (app) {
     toolbar.domNode.addClass("flex-item fixed");
     nav.domNode.addClass("flex-item fixed");
 
-    toolbar.addBreadCrumbNode("repositories", "Repositories", function (e, id) {
-        toolbar.removeBreadcrumbNodesAfter(id);
-    });
-
-    
-
-    function updateSyncState () {
-        _this.svn.isUpToDate(function (upToDate) {
-            toolbar.setSyncState(upToDate);
-        });
-    };
-
-    // this.center.append(toolbar.domNode);
-
-    $(window.document.body).append(wrapper);
-
-    // var path = window.prompt("SVN PATH???");
-    _this.svn = new SVN(SettingsProvider.getValue("repo"), function (err, info) {
-        if (err) {
-            new Popup("Error", "Cannot find repository: \n" + SettingsProvider.getValue("repo"), function (conf) {
-                nav.select("Settings");
-            });
-        } else {
-            nav.select("Changes");
-        }
-        var repo = SettingsProvider.getValue("repo", "");
-        repo = repo.substr(repo.lastIndexOf("/") + 1);
-        toolbar.addBreadCrumbNode(repo, repo, function () { });
-        statusbar = _this.createStatusbar();
-        wrapper.append(statusbar.domNode);
-        updateSyncState();
-    });
-
-    refreshInterval = SettingsProvider.getValue("syncRefreshInterval");
-    refreshInterval = refreshInterval ? parseInt(refreshInterval, 10) * 1000 : 60000;
-    
-    // Update the sync button periodically to see if we are up to date
-    setInterval(updateSyncState, refreshInterval);
-
-    toolbar.on("svnUpdate", function () {
-        toolbar.setUpdateButtonLoading(true);
-        _this.svn.update(function(err, info) {
-            toolbar.setUpdateButtonLoading(false);
-            toolbar.setSyncState(!err);
-        });
-    });
+    $(window.document.body).append(this.wrapper);
 };
 
 App.prototype.createWrapper = function () {
-    return this.main = $('<div class="flex column" style="width: 100%; height: 100%;">');
+    return $('<div class="flex column" style="width: 100%; height: 100%;">');
 };
 
 App.prototype.createNavigation = function () {
-    var _this = this,
-         nav = _this.navigation = new Navigation();
-
-    nav.on("navigate", function (pageName) {
+    var nav = new Navigation(),
+        _this = this;
+    nav.on('navigate', function (pageName) {
         _this.handleNavigate(pageName);
     });
     return nav;
 };
 
 App.prototype.createCenter = function () {
-    return this.center = $('<div class="flex row">');
+    return $('<div class="flex row">');
 };
 
 App.prototype.createToolbar = function () {
-    return this.toolbar = new Toolbar();
+    return new Toolbar();
 };
 
-App.prototype.createStatusbar = function () {
-    return this.statusbar = new StatusBar(this.svn);
+App.prototype.createStatusbar = function (svn) {
+    return new StatusBar(svn);
+};
+
+App.prototype.showMenu = function () {
+    this.nav.domNode.show();
+};
+
+App.prototype.hideMenu = function () {
+    this.nav.domNode.hide();
 };
 
 App.prototype.removeScreen = function () {
@@ -121,6 +115,7 @@ App.prototype.removeScreen = function () {
 };
 
 App.prototype.showScreen = function (newScreen) {
+    this.removeScreen();
     this.currentScreen = newScreen;
     this.center.append(newScreen.domNode);
 };
@@ -133,24 +128,6 @@ App.prototype.showLoading = function (loading) {
     }
 };
 
-App.prototype.handleNavigate = function (pageName) {
-    this.removeScreen();
-
-    var newScreen;
-
-    if (pageName === "History") {
-        newScreen = this.showHistory();
-    } else if (pageName === "Settings") {
-        newScreen = this.showSettings();
-    } else if (pageName === "Changes") {
-        newScreen = this.showChanges();
-    } else if (pageName === "Browse") {
-        newScreen = this.showBrowse();
-    }
-
-    this.showScreen(newScreen);
-};
-
 App.prototype.showSettings = function () {
     var _this = this;
 
@@ -158,7 +135,7 @@ App.prototype.showSettings = function () {
         _this.settings = new Settings(_this.svn);
     }
 
-    return _this.settings;
+    this.showScreen(_this.settings);
 };
 
 App.prototype.showChanges = function () {
@@ -171,7 +148,7 @@ App.prototype.showChanges = function () {
         });
     }
 
-    return _this.changeList;
+    this.showScreen(_this.changeList);
 };
 
 App.prototype.showBrowse = function () {
@@ -181,20 +158,20 @@ App.prototype.showBrowse = function () {
         _this.browse = new Browse(_this.svn);
     }
 
-    return _this.browse;
+    this.showScreen(_this.browse);
 };
 
-App.prototype.showHistory = function () {
+App.prototype.showHistory = function (path) {
     var _this = this;
 
-    if (!_this.logList) {
-        _this.logList = new LogList(_this.svn);
-        _this.logList.on("changeClick", function (path, revision) {
-            _this.showDiff(path, revision);
-        });
-    }
+    // if (!_this.logList) {
+        _this.logList = new LogList(_this.svn, path);
+        // _this.logList.on("changeClick", function (path, revision) {
+            // _this.showDiff(path, revision);
+        // });
+    // }
 
-    return _this.logList;
+    this.showScreen(_this.logList);
 };
 
 App.prototype.showDiff = function (path, revision) {
@@ -209,10 +186,6 @@ App.prototype.showDiff = function (path, revision) {
             _this.showLoading(false);
         });
     });
-};
-
-App.prototype.handleLogClick = function (log, node) {
-    node.slideUp();
 };
 
 module.exports = function () {
