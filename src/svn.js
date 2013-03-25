@@ -7,8 +7,15 @@ var util = require('util');
 var EventEmitter = require("events").EventEmitter;
 
 var SVN = function (repoRoot, readyCallback) {
+    var _this = this;
     this.repoRoot = repoRoot;
-    this.refreshInfoCache("info", readyCallback);
+    this.run('svn', ['-v'], function (err, text) {
+        if (!err) {
+            readyCallback(err, null);
+        } else {
+            _this.refreshInfoCache("info", readyCallback);
+        }
+    });
 };
 
 util.inherits(SVN, EventEmitter);
@@ -154,7 +161,7 @@ svn.run = function (cmd, args, callback) {
     });
 
     proc.stderr.on('data', function (data) {
-        data += "";
+        data = String(data);
 
         //ssh warning, ignore
         if (data.indexOf("Killed by signal 15.") === -1) {

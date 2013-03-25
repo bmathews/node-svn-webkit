@@ -66,11 +66,11 @@ App.prototype.setRepo = function (repo) {
             }
             if (_this.logList) {
                 _this.logList.domNode.remove();
-                delete _this.logList;   
+                delete _this.logList;
             }
             if (_this.changeList) {
                 _this.changeList.domNode.remove();
-                delete _this.changeList;   
+                delete _this.changeList;
             }
             _this.statusbar = _this.createStatusbar(_this.svn);
             _this.statusbar.setRepo(repo);
@@ -81,7 +81,11 @@ App.prototype.setRepo = function (repo) {
             // Update the sync button periodically to see if we are up to date
             setInterval(updateSyncState, refreshInterval);
         } else {
-            window.confirm("Error: \n\n", err);
+            if (/^execvp\(\)/.test(err)) {
+                window.confirm('SVN cmd-line tool not installed.');
+            } else {
+                window.confirm("Error: \n\n" + err);
+            }
         }
     });
 };
