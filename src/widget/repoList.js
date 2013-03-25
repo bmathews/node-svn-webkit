@@ -72,7 +72,9 @@ RepoList.prototype.handleCheckoutClick = function () {
 };
 
 RepoList.prototype.handleRemoveClick = function (repo) {
-
+    var index = this.repoList.indexOf(repo);
+    this.repoList.splice(index);
+    this.saveRepoList();
 };
 
 RepoList.prototype.handleEditClick = function (repo) {
