@@ -412,6 +412,19 @@ textarea, input[type=text] {
     background-clip: padding-box; 
 }
 
+.statusbar .process-status {
+    float: right;
+    background-size: 16px 16px;
+    display: inline-block;
+    min-height: 16px;
+    min-width: 16px;
+    background-position: right center;
+    text-indent: 20px;
+    line-height: 16px;
+    text-align: right;
+    direction: rtl;
+}
+
 .statusbar {
     border-bottom: none;
     border-top: 1px solid #999;
