@@ -100,7 +100,10 @@ RepoList.prototype.saveRepoList = function () {
 RepoList.prototype.addItem = function (repo) {
     var _this = this, listNode = this.logContainer, repoNode, editButton, deleteButton;
 
-    repoNode = $('<div class="path repo-item"><span class="repoName">' + repo.name + '</span><span class="repoPath">' + repo.path + '</span></div>');
+    repoNode = $('<div class="path repo-item"><span class="repoName">' + repo.name + '</span><span class="repoPath">' + repo.path + '</span></div>')
+        .on('click', function (e) {
+            _this.handleRepoClick(repo);
+        });
 
     editButton = $('<button style="float: right;" class="btn"><i class="icon-pencil"></i></button>')
         .appendTo(repoNode)
