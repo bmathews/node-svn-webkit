@@ -20,7 +20,7 @@ var LogItem = function (log, isWorkingRev) {
 
         changeNode.on('click', function (evt) {
             evt.stopPropagation();
-            _this.handleChangeClick(path);
+            _this.handleChangeClick(path, log.revision);
         });
 
         changeNode.on('contextmenu', function (evt) {
@@ -71,8 +71,8 @@ LogItem.prototype.handleClick = function (evt, log, item) {
     this.expanded = !this.expanded;
 };
 
-LogItem.prototype.handleChangeClick = function (path) {
-    this.emit("changeClick", path);
+LogItem.prototype.handleChangeClick = function (path, revision) {
+    global.App.router.showDiffExternal(path, revision);
 };
 
 module.exports = function (log, isWorkingRev) {

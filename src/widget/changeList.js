@@ -198,7 +198,7 @@ ChangeList.prototype.selectAll = function (checked) {
 };
 
 ChangeList.prototype.handleChangeClick = function (path) {
-    this.emit("changeClick", path);
+    global.App.router.showDiffLocal(path);
 };
 
 ChangeList.prototype.handleContextMenu = function (evt, change) {
@@ -274,7 +274,7 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
         label: 'Add',
         enabled: status === "?",
         click: function () {
-            _this.svn.add(change.path, function (text) {
+            _this.svn.add(change.path, function (err, text) {
                 console.log("Add done: ", text);
                 _this.refresh();
             });

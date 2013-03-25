@@ -15,8 +15,6 @@ util.inherits(SVN, EventEmitter);
 
 var svn = SVN.prototype;
 
-
-
 // TODO: this function really necessary, all I am saving is the scope[...] call?
 svn.refreshInfoCache = function (infoCacheName, callback, revision) {
     var scope = this;
@@ -103,7 +101,7 @@ svn.getInfo = function (callback, revision) {
 
 svn.log = function (path, limit, callback) {
     var _this = this;
-    return this.run('svn', ['log', path ? this.repoRoot + path : this.repoRoot, '-v', '-l', limit || 25, '-r', 'HEAD:1', '--incremental'], function (err, text) {
+    return this.run('svn', ['log', path ? this.info.url + path : this.info.url, '-v', '-l', limit || 25, '-r', 'HEAD:1', '--incremental'], function (err, text) {
         if (!err) {
             callback(null, _this._parseLog(text));
         } else {

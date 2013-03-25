@@ -143,9 +143,6 @@ App.prototype.showChanges = function () {
 
     if (!_this.changeList) {
         _this.changeList = new ChangeList(_this.svn);
-        _this.changeList.on("changeClick", function (path) {
-            _this.showDiff(path);
-        });
     }
 
     this.showScreen(_this.changeList);
@@ -166,15 +163,16 @@ App.prototype.showHistory = function (path) {
 
     // if (!_this.logList) {
         _this.logList = new LogList(_this.svn, path);
-        // _this.logList.on("changeClick", function (path, revision) {
-            // _this.showDiff(path, revision);
-        // });
     // }
 
     this.showScreen(_this.logList);
 };
 
-App.prototype.showDiff = function (path, revision) {
+App.prototype.showDiffLocal = function (path) {
+    this.showDiffExternal(path);
+};
+
+App.prototype.showDiffExternal = function (path, revision) {
     var _this = this;
     _this.removeScreen();
     _this.showLoading(true);

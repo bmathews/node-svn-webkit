@@ -48,7 +48,6 @@ LogList.prototype.showLogs = function (logs) {
             _this.handleChangeClick(path, log.revision);
         });
         logItem.domNode.on('contextmenu', function (evt) {
-            console.log("log item contextmenu");
             _this.showLogItemContextMenu(evt, log);
         });
     });
