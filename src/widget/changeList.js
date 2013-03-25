@@ -281,11 +281,6 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
         }
     }));
 
-    menu.append(new gui.MenuItem({
-        label: 'Ignore',
-        enabled: false
-    }));
-
     menu.popup(evt.clientX, evt.clientY);
 };
 

@@ -112,6 +112,14 @@ li {
     cursor: default;
 }
 
+.repo-list-wrapper {
+    overflow: auto;
+}
+
+.repo-controls {
+    padding: 8px;
+}
+
 .repoName {
     font-weight: 700;
     margin-right: 10px;
@@ -457,7 +465,7 @@ box-shadow: inset 0px 1px 0px #eee;
 .popup {
     min-width: 200px;
     max-width: 300px;
-    background: rgba(255,255,255, .9);
+    background: rgba(255,255,255, 1);
     border-radius: 0 0 4px 4px;
     box-shadow: 0px 0px 30px rgba(0,0,0,.4);
     padding: 10px;
@@ -471,6 +479,7 @@ box-shadow: inset 0px 1px 0px #eee;
 
 .popup-cover {
     position: absolute;
+    z-index: 7;
     left: 0px;
     right: 0px;
     top: 0px;
