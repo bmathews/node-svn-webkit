@@ -39,7 +39,7 @@ svn.switchAll = function (rev, callback) {
         if (!err) {
             // Update the info if we successfully updated
             _this.refreshInfoCache("info", function (err, info) {
-                callback(!err, info);
+                callback(null, info);
             });
         } else {
             window.confirm(err + text);
@@ -79,7 +79,7 @@ svn.update = function (callback, revision) {
         if (!err) {
             // Update the info if we successfully updated
             _this.refreshInfoCache("info", function (err, info) {
-                callback(err, info);
+                callback(null, info);
             });
         } else {
             callback(err);
