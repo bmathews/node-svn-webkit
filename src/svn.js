@@ -89,12 +89,16 @@ svn.isUpToDate = function(callback) {
     });
 };
 
-svn.setProperty = function (path, propName, value) {
+svn.setProperty = function (path, propName, value, callback) {
     if (value === null) {
-        this.run('svn', ["pd", propName, path]);
+        this.run('svn', ["pd", propName, path], callback);
     } else {
-        this.run('svn', ["ps", propName, value, path]);
+        this.run('svn', ["ps", propName, value, path], callback);
     }
+};
+
+svn.getProperty = function (path, propName, callback) {
+    this.run('svn', ["pg", propName, path], callback);
 };
 
 svn.getProperties = function (path, callback) {

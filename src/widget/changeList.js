@@ -281,6 +281,28 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
         }
     }));
 
+    menu.append(new gui.MenuItem({
+        label: 'Ignore',
+        enabled: status === "?",
+        click: function () {
+            var parentPath = path.resolve(_this.svn.repoRoot + change.path, '..') + path.sep;
+            _this.svn.getProperty(parentPath, 'svn:ignore', function (err, text) {
+                if (!err) {
+                    text += "\n" + path.basename(change.path);
+                    _this.svn.setProperty(parentPath, 'svn:ignore', text, function (err, text) {
+                        if (!err) {
+                            _this.refresh();
+                        } else {
+                            window.confirm(err + text);
+                        }
+                    });
+                } else {
+                    window.confirm(err + text);
+                }
+            });
+        }
+    }));
+
     menu.popup(evt.clientX, evt.clientY);
 };
 
