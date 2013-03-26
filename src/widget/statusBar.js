@@ -10,10 +10,9 @@ var StatusBar = function (svn) {
 
     this.domNode = container;
     this.status = $('<div>');
-    this.repoName = $('<div>');
+    this.repoName = $('<div class="repoName">');
     this.domNode.append(this.status);
     this.domNode.append(this.repoName);
-    
 
     svn.on('cmd', function (proc, cmd, args) {
         _this.handleCmdRun(proc, cmd, args);
