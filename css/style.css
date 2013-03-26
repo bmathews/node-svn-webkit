@@ -431,6 +431,14 @@ textarea, input[type=text] {
     min-height: 28px;
     z-index: 6;
     background-clip: padding-box; 
+    font-weight: 700;
+    text-shadow: 0px 1px 0px #eee;
+    font-size: 11px;
+}
+
+.statusbar .repoName {
+    margin-left: 4px;
+    margin-top: 1px;
 }
 
 .statusbar .process-status {

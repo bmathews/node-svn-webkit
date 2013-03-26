@@ -204,10 +204,10 @@ App.prototype.showHistory = function (path) {
 };
 
 App.prototype.showDiffLocal = function (path) {
-    this.showDiffExternal(path);
+    this.showDiffExternal(path, null, false);
 };
 
-App.prototype.showDiffExternal = function (path, revision) {
+App.prototype.showDiffExternal = function (path, revision, readonly) {
     var _this = this;
     _this.removeScreen();
     _this.showLoading(true);
@@ -215,7 +215,7 @@ App.prototype.showDiffExternal = function (path, revision) {
         _this.svn.getFile(path.trim(), revision ? revision - 1 : "BASE", function (err, text2) {
             var diffViewer = new DiffViewer();
             _this.showScreen(diffViewer);
-            diffViewer.show(pathUtil.extname(path).substr(1), text2, text1);
+            diffViewer.show(pathUtil.extname(path).substr(1), text2, text1, readonly);
             _this.showLoading(false);
         });
     });
