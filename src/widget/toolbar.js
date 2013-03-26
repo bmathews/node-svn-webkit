@@ -4,7 +4,7 @@ var EventEmitter = require("events").EventEmitter;
 require('date-utils');
 
 function createButton (text, btnClass, iconClass, dir) {
-    var button = $('<button class="btn ' + btnClass + '" style="float: ' + dir + ';"><span class="btnText">' +  text + '</span><span class="' + iconClass + '">&nbsp;</span></button>');
+    var button = $('<button class="btn ' + btnClass + '" style="float: ' + dir + ';"><span class="btnText">' +  text + '</span><span class="' + iconClass + '"></span></button>');
     return button;
 }
 
@@ -15,6 +15,18 @@ var Toolbar = function (args) {
 
     this.domNode = container;
     this._syncState = args.syncState;
+
+    this.backButton = createButton("", "", "icon icon-arrow-left", "left")
+        .appendTo(container)
+        .on("click", function () {
+            _this.emit("back");
+        });
+
+    this.forwardButton = createButton("", "", "icon icon-arrow-right", "left")
+        .appendTo(container)
+        .on("click", function () {
+            _this.emit("forward");
+        });
 
     this.updateButton = createButton("Branch In Sync", "syncButton", "icon icon-refresh-small", "right")
         .appendTo(container)

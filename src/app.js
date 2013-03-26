@@ -34,6 +34,12 @@ var App = function () {
         this.router.showRepositories();
     }
 
+    this.initEvents();
+};
+
+
+App.prototype.initEvents = function (){
+    var _this = this;
     this.toolbar.on("svnUpdate", function () {
         _this.toolbar.setUpdateButtonLoading(true);
         _this.svn.update(function(err, info) {
@@ -41,7 +47,13 @@ var App = function () {
             _this.toolbar.setSyncState(!err);
         });
     });
-};
+    this.toolbar.on("back", function () {
+        _this.router.back();
+    });
+    this.toolbar.on("forward", function () {
+        _this.router.forward();
+    });
+}
 
 App.prototype.setRepo = function (repo) {
     var _this = this;
