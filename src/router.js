@@ -6,14 +6,6 @@ var Router = function (app) {
     var _this = this;
     this.app = app;
     this.doPushHistory = true;
-
-    $(window.document).keypress(function (e) {
-        if (e.which === 98) {
-            _this.back();
-        } else if (e.which === 102) {
-            _this.forward();
-        }
-    });
 };
 
 util.inherits(Router, EventEmitter);
