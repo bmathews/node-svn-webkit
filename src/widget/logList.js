@@ -86,21 +86,21 @@ LogList.prototype.showLogItemContextMenu = function (evt, log) {
     }));
 
     menu.append(new gui.MenuItem({
-        label: 'Switch to Revision ' + rev,
+        label: 'Update to Revision ' + rev,
         click: function () {
-            _this.handleSwitch(rev);
+            _this.handleUpdate(rev);
         }
     }));
 
     menu.popup(evt.clientX, evt.clientY);
 };
 
-LogList.prototype.handleSwitch = function (rev) {
+LogList.prototype.handleUpdate = function (rev) {
     var _this = this;
-    this.svn.switchAll(rev, function (err, text) {
+    this.svn.update(function (err, text) {
         console.log(text);
         _this.refresh();
-    });
+    }, rev);
 };
 
 LogList.prototype.handleRevert = function (rev) {
