@@ -47,20 +47,11 @@ var Toolbar = function (args) {
         });
 
     global.App.router.on('statechange', function (backEnabled, forwardEnabled) {
-        if (!backEnabled) {
-            _this.backButton.attr("disabled", true);
-            _this.backButton.find("i").removeClass("icon-white");
-        } else {
-            _this.backButton.removeAttr("disabled");
-            _this.backButton.find("i").addClass("icon-white");
-        }
-        if (!forwardEnabled) {
-            _this.forwardButton.attr("disabled", true);
-            _this.forwardButton.find("i").removeClass("icon-white");
-        } else {
-            _this.forwardButton.removeAttr("disabled");
-            _this.forwardButton.find("i").addClass("icon-white");
-        }
+        _this.backButton.prop('disabled', !backEnabled);
+        _this.backButton.find("i").toggleClass("icon-white", backEnabled);
+
+        _this.forwardButton.prop('disabled', !forwardEnabled);
+        _this.forwardButton.find("i").toggleClass("icon-white", forwardEnabled);
     });
 
 };
@@ -77,15 +68,8 @@ Toolbar.prototype.setSyncState = function (synced) {
 };
 
 Toolbar.prototype.setUpdateButtonLoading = function (loading) {
-    if (loading) {
-        this.updateButton.attr("disabled", true);
-        this.updateButton.find("i").removeClass("icon-white");
-        // this.updateButton.find("i").addClass("loading");
-    } else {
-        this.updateButton.removeAttr("disabled");
-        this.updateButton.find("i").addClass("icon-white");
-        // this.updateButton.find("i").removeClass("loading");
-    }
+    this.updateButton.prop("disabled", loading);
+    this.updateButton.find("i").toggleClass("icon-white", !loading);
 };
 
 module.exports = function () {
