@@ -67,11 +67,14 @@ var DiffViewer = function () {
 
 util.inherits(DiffViewer, EventEmitter);
 
-DiffViewer.prototype.show = function (ext, file1, file2) {
+DiffViewer.prototype.show = function (ext, file1, file2, editable) {
     var mergely = $("<div id='mergely'>");
     this.domNode.append(mergely);
 
     mergely.mergely({
+        rhs_cmsettings: {
+            readOnly: true //editable !== false
+        },
         cmsettings: {
             readOnly: true,
             lineWrapping: false,
