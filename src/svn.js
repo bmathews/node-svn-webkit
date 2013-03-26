@@ -154,6 +154,10 @@ svn.add = function (path, callback) {
     return this.run('svn', ['add', this.repoRoot + path], callback);
 };
 
+svn.cleanup = function (path, callback) {
+    return this.run('svn', ['cleanup', this.repoRoot + path], callback);
+};
+
 svn.run = function (cmd, args, callback) {
     var text = "",
         err = "",
