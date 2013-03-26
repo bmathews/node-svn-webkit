@@ -79,10 +79,10 @@ svn.update = function (callback, revision) {
         if (!err) {
             // Update the info if we successfully updated
             _this.refreshInfoCache("info", function (err, info) {
-                callback(!err, info);
+                callback(err, info);
             });
         } else {
-            callback(false);
+            callback(err);
         }
     });
 };
