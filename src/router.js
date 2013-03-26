@@ -63,7 +63,7 @@ Router.prototype.forward = function () {
 
 Router.prototype.showRepo = function (repo) {
     this.app.setRepo(repo);
-    this._pushHistory(this.showRepo, repo);
+    this._pushHistory(this.showRepo, [repo]);
 };
 
 Router.prototype.showRepositories = function () {
@@ -113,7 +113,7 @@ Router.prototype.showChanges = function () {
 Router.prototype.showDiffLocal = function (path) {
     this.app.showMenu();
     this.app.showDiffLocal(path);
-    this._pushHistory(this.showDiffLocal, path);
+    this._pushHistory(this.showDiffLocal, [path]);
     this.emit("route:changes");
 };
 
