@@ -45,6 +45,9 @@ App.prototype.initEvents = function (){
         _this.svn.update(function(err, info) {
             _this.toolbar.setUpdateButtonLoading(false);
             _this.toolbar.setSyncState(!err);
+            if (_this.logList && _this.currentScreen === _this.logList) {
+                _this.logList.refresh();
+            }
         });
     });
     this.toolbar.on("back", function () {
@@ -53,7 +56,7 @@ App.prototype.initEvents = function (){
     this.toolbar.on("forward", function () {
         _this.router.forward();
     });
-}
+};
 
 App.prototype.setRepo = function (repo) {
     var _this = this;

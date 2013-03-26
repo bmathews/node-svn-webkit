@@ -96,9 +96,10 @@ LogList.prototype.showLogItemContextMenu = function (evt, log) {
 };
 
 LogList.prototype.handleSwitch = function (rev) {
+    var _this = this;
     this.svn.switchAll(rev, function (err, text) {
         console.log(text);
-        //TODO: refresh view
+        _this.refresh();
     });
 };
 

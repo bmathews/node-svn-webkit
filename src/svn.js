@@ -34,7 +34,18 @@ svn.refreshInfoCache = function (infoCacheName, callback, revision) {
 };
 
 svn.switchAll = function (rev, callback) {
-    return this.run('svn', ['switch', this.info.url, this.repoRoot, '-r', rev, '--accept', 'postpone'], callback);
+    var _this = this;
+    return this.run('svn', ['switch', this.info.url, this.repoRoot, '-r', rev, '--accept', 'postpone'], function (err, text) {
+        if (!err) {
+            // Update the info if we successfully updated
+            _this.refreshInfoCache("info", function (err, info) {
+                callback(!err, info);
+            });
+        } else {
+            window.confirm(err + text);
+            callback(err, null);
+        }
+    });
 };
 
 // svn.switchPaths = function (rev, paths, callback) {
@@ -64,7 +75,7 @@ svn.update = function (callback, revision) {
     }
 
     args = args.concat(['--accept', 'postpone']);
-    return this.run('svn', args, function (text, err) {
+    return this.run('svn', args, function (err, text) {
         if (!err) {
             // Update the info if we successfully updated
             _this.refreshInfoCache("info", function (err, info) {
