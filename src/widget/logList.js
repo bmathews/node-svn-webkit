@@ -1,25 +1,44 @@
 var _ = require('underscore'),
     EventEmitter = require("events").EventEmitter,
     util = require('util'),
-    LogItem = require('./logItem.js');
+    LogItem = require('./logItem.js'),
+    SettingsProvider = require('../settingsProvider.js');
 
 require('date-utils');
 
 var LogList = function (svn, path) {
     var _this = this;
     this.svn = svn;
-    this.domNode = $("<div class='log-list-wrapper flex-item loading'>");
+    this.domNode = $("<div class='log-list-wrapper flex-item'>");
+    this.refreshButton = $('<button style="float: right; margin-top: 24px; margin-right: 10px; z-index: 10; position: relative;" class="btn"><i class="icon-refresh"></i></button>');
+    this.domNode.append(this.refreshButton);
     this.logContainer = $("<div class='log-list'>");
     this.domNode.append(this.logContainer);
-    svn.log(path, JSON.parse(window.localStorage.logLimit), function (err, logs) {
+    this.fetchLogs(path);
+    this.path = path;
+
+    this.refreshButton[0].onclick = function () {
+        _this.refresh();
+    };
+};
+
+util.inherits(LogList, EventEmitter);
+
+LogList.prototype.refresh = function () {
+    this.logContainer.empty();
+    this.fetchLogs(this.path);
+};
+
+LogList.prototype.fetchLogs = function (path) {
+    var _this = this;
+    _this.domNode.addClass('loading');
+    this.svn.log(path, SettingsProvider.getValue('logLimit', 15), function (err, logs) {
         _this.domNode.removeClass('loading');
         if (!err) {
             _this.showLogs(logs);
         }
     });
 };
-
-util.inherits(LogList, EventEmitter);
 
 LogList.prototype.showLogs = function (logs) {
     var listWrapper = this.logContainer,
