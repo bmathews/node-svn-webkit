@@ -9,11 +9,11 @@ var EventEmitter = require("events").EventEmitter;
 var SVN = function (repoRoot, readyCallback) {
     var _this = this;
     this.repoRoot = repoRoot;
-    this.run('svn', ['-v'], function (err, text) {
+    this.run('svn', ['--version'], function (err, text) {
         if (!err) {
-            readyCallback(err, null);
-        } else {
             _this.refreshInfoCache("info", readyCallback);
+        } else {
+            readyCallback(err, null);
         }
     });
 };
@@ -34,7 +34,7 @@ svn.refreshInfoCache = function (infoCacheName, callback, revision) {
 };
 
 svn.switchAll = function (rev, callback) {
-    return this.run('svn', ['switch', this.info.url, this.repoRoot, '-r', rev], callback);
+    return this.run('svn', ['switch', this.info.url, this.repoRoot, '-r', rev, '--accept', 'postpone'], callback);
 };
 
 // svn.switchPaths = function (rev, paths, callback) {
@@ -50,17 +50,25 @@ svn.diffLocal = function (file, callback) {
     return this.run('svn', ['diff', this.repoRoot + file], callback);
 };
 
+//returns a summary of changes from a revision range
+svn.diffChangeList = function (startRev, endRev, callback) {
+    return this.run('svn', ['diff', '-r', startRev + ":" + endRev, '--summarize'], callback);
+};
+
 svn.update = function (callback, revision) {
     var args = ['update', this.repoRoot];
     var _this = this;
+
     if (revision !== undefined) {
         args = args.concat(["-r", revision]);
     }
+
+    args = args.concat(['--accept', 'postpone']);
     return this.run('svn', args, function (text, err) {
         if (!err) {
             // Update the info if we successfully updated
             _this.refreshInfoCache("info", function (err, info) {
-                callback(!err);
+                callback(!err, info);
             });
         } else {
             callback(false);
@@ -121,9 +129,8 @@ svn.revertLocal = function (file, callback) {
     return this.run('svn', ['revert', this.repoRoot + file], callback);
 };
 
-//TODO: implement
 svn.revertRevision = function (file, rev, callback) {
-
+    return this.run('svn', ['merge', '-c', "-" + rev, this.info.url + file.replace(/\\/g, "/"), '--accept', 'postpone'], callback);
 };
 
 svn.status = function (callback) {
@@ -150,7 +157,7 @@ svn.add = function (path, callback) {
 svn.run = function (cmd, args, callback) {
     var text = "",
         err = "",
-        proc = spawn(cmd, args);
+        proc = spawn(cmd, args, { cwd: this.repoRoot });
 
     this.emit("cmd", proc, cmd, args);
 
@@ -260,7 +267,7 @@ svn._parseStatus = function (text) {
         if (line.trim().length > 1) {
             changes.push({
                 status: line[0],
-                path: path.resolve(line.substr(1).trim()).replace(this.repoRoot, "")
+                path: path.resolve(line.substr(7).trim()).replace(this.repoRoot, "")
             });
         }
     }

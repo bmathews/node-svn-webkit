@@ -84,7 +84,9 @@ LogList.prototype.handleSwitch = function (rev) {
 };
 
 LogList.prototype.handleRevert = function (rev) {
-    //TODO: revert root to revision
+    this.svn.revertRevision("", rev, function (err, text) {
+        window.confirm("err:" + err + "\n\n text:" + text);
+    });
 };
 
 LogList.prototype.handleChangeClick = function (path, revision) {
