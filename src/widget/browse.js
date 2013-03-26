@@ -2,6 +2,8 @@ var _ = require('underscore');
 require('date-utils');
 var EventEmitter = require("events").EventEmitter;
 var util = require('util');
+var Popup = require("./popup");
+var PropList = require("./proplist");
 
 var Browse = function (svn) {
     this.svn = svn;
@@ -30,6 +32,36 @@ Browse.prototype.handlePathContextMenu = function (path, evt) {
         click: function () {
             var relPath = path.replace(_this.svn.repoRoot, "");
             global.App.router.showHistory(relPath);
+        }
+    }));
+
+    menu.append(new gui.MenuItem({
+        label: 'Show Properties',
+        click: function () {
+            _this.svn.getProperties(path, function(err, props) {
+                if (!err) {
+                    var propList = new PropList(props);
+                    new Popup("Properties", null, function (doSave) {
+                        if (doSave) {
+                            var newProps = propList.getProperties();
+                            for (var prop in newProps) {
+                                _this.svn.setProperty(path, prop, newProps[prop]);
+                            }
+                            for (var prop in props) {
+                                if (!newProps[prop]) {
+                                    _this.svn.setProperty(path, prop, null);
+                                }
+                            }
+                        }
+                        propList.domNode.remove();
+                    }, {
+                        okMessage: "Save",
+                        html: propList.domNode
+                    });
+                }
+            });
+//            var relPath = path.replace(_this.svn.repoRoot, "");
+//            global.App.router.showHistory(relPath);
         }
     }));
 

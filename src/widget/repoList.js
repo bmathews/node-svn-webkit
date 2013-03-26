@@ -86,7 +86,13 @@ RepoList.prototype.handleRemoveClick = function (repo) {
 };
 
 RepoList.prototype.handleEditClick = function (repo) {
-
+    new Popup("Edit Repo", null, function (doSave) {
+        if (doSave) {
+        }
+    }, {
+        okMessage: "Save",
+        html: new PropList().domNode
+    })
 };
 
 RepoList.prototype.handleRepoClick = function (repo) {

@@ -254,7 +254,7 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
         label: status === "A" ? 'Undo Add' : 'Revert Changes',
         enabled: status !== "?",
         click: function () {
-            new Popup("Comfirm removal", "This action is not undoable. Are you sure you want to discard all changes to \"<b>" + change.path.substr(change.path.lastIndexOf("/") + 1) + "</b>\"?" , function (conf) {
+            new Popup("Confirm removal", "This action is not undoable. Are you sure you want to discard all changes to \"<b>" + change.path.substr(change.path.lastIndexOf("/") + 1) + "</b>\"?" , function (conf) {
                 if (conf) {
                     _this.svn.revertLocal(change.path, function (err, text) {
                         console.log("Revert done: ", text);

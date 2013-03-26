@@ -89,6 +89,48 @@ svn.isUpToDate = function(callback) {
     });
 };
 
+svn.setProperty = function (path, propName, value) {
+    if (value === null) {
+        this.run('svn', ["pd", propName, path]);
+    } else {
+        this.run('svn', ["ps", propName, value, path]);
+    }
+};
+
+svn.getProperties = function (path, callback) {
+    var _this = this;
+    this.run('svn', ["pl", path], function (err, text) {
+        if (!err) {
+            var lines = text.replace(/\r\n/g, "\n").replace(/ /g, "").split("\n").filter(function(ele) { return !!ele; });
+            var props = {};
+            if (lines.length > 0) {
+                lines.shift(); // Skip the first one as it is not a property
+                lines.forEach(function (ele, i) {
+                    var propName = lines[i] = ele.trim();
+                    if (propName) {
+                        _this.run('svn', ['pg', propName, path], function (err, text) {
+                            lines.splice(lines.indexOf(propName), 1);
+                            if (!err) {
+                                props[propName.trim()] = text;
+                                // Were done
+                                if (lines.length === 0) {
+                                    callback(null, props);
+                                }
+                            } else {
+                                callback(err, null);
+                            }
+                        });
+                    }
+                });
+            } else {
+                callback(null, props)
+            }
+        } else {
+            callback(err, null);
+        }
+    });
+};
+
 //TODO: ghetto. refactor
 svn.getFile = function (file, revision, callback) {
     var path = this.repoRoot + file;
@@ -182,7 +224,9 @@ svn.run = function (cmd, args, callback) {
     });
 
     proc.on('close', function (code) {
-        callback(err, text);
+        if (callback) {
+            callback(err, text);
+        }
     });
 
     return function () {
