@@ -50,12 +50,6 @@ App.prototype.initEvents = function (){
             }
         });
     });
-    this.toolbar.on("back", function () {
-        _this.router.back();
-    });
-    this.toolbar.on("forward", function () {
-        _this.router.forward();
-    });
 };
 
 App.prototype.setRepo = function (repo) {

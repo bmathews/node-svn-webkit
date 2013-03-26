@@ -4,7 +4,7 @@ var EventEmitter = require("events").EventEmitter;
 require('date-utils');
 
 function createButton (text, btnClass, iconClass, dir) {
-    var button = $('<button class="btn ' + btnClass + '" style="float: ' + dir + ';"><span class="btnText">' +  text + '</span><span class="' + iconClass + '"></span></button>');
+    var button = $('<button class="btn ' + btnClass + '" style="float: ' + dir + ';"><span class="btnText">' +  text + '</span><i class="' + iconClass + '"></i></button>');
     return button;
 }
 
@@ -16,35 +16,52 @@ var Toolbar = function (args) {
     this.domNode = container;
     this._syncState = args.syncState;
 
-    this.backButton = createButton("", "", "icon icon-arrow-left", "left")
+    this.backButton = createButton("", "", "icon-white icon-arrow-left", "left")
         .appendTo(container)
         .on("click", function () {
-            _this.emit("back");
+            global.App.router.back();
         });
 
-    this.forwardButton = createButton("", "", "icon icon-arrow-right", "left")
+    this.forwardButton = createButton("", "", "icon-white icon-arrow-right", "left")
         .appendTo(container)
         .on("click", function () {
-            _this.emit("forward");
+            global.App.router.forward();
         });
 
-    this.updateButton = createButton("Branch In Sync", "syncButton", "icon icon-refresh-small", "right")
+    this.updateButton = createButton("Branch In Sync", "syncButton", "icon-white icon-refresh", "right")
         .appendTo(container)
         .on("click", function () {
             _this.emit("svnUpdate");
         });
 
-    this.settingsButton = createButton("Settings", "", "icon icon-settings", "left")
+    this.settingsButton = createButton("", "", "icon-white icon-wrench", "left")
         .appendTo(container)
         .on("click", function () {
             global.App.router.showSettings();
         });
 
-    this.repoButton = createButton("Repositories", "", "icon icon-repos", "left")
+    this.repoButton = createButton("", "", "icon-white icon-bookmark", "left")
         .appendTo(container)
         .on("click", function () {
             global.App.router.showRepositories();
         });
+
+    global.App.router.on('statechange', function (backEnabled, forwardEnabled) {
+        if (!backEnabled) {
+            _this.backButton.attr("disabled", true);
+            _this.backButton.find("i").removeClass("icon-white");
+        } else {
+            _this.backButton.removeAttr("disabled");
+            _this.backButton.find("i").addClass("icon-white");
+        }
+        if (!forwardEnabled) {
+            _this.forwardButton.attr("disabled", true);
+            _this.forwardButton.find("i").removeClass("icon-white");
+        } else {
+            _this.forwardButton.removeAttr("disabled");
+            _this.forwardButton.find("i").addClass("icon-white");
+        }
+    });
 
 };
 
@@ -62,10 +79,12 @@ Toolbar.prototype.setSyncState = function (synced) {
 Toolbar.prototype.setUpdateButtonLoading = function (loading) {
     if (loading) {
         this.updateButton.attr("disabled", true);
-        this.updateButton.find(".icon").addClass("loading");
+        this.updateButton.find("i").removeClass("icon-white");
+        // this.updateButton.find("i").addClass("loading");
     } else {
         this.updateButton.removeAttr("disabled");
-        this.updateButton.find(".icon").removeClass("loading");
+        this.updateButton.find("i").addClass("icon-white");
+        // this.updateButton.find("i").removeClass("loading");
     }
 };
 

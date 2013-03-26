@@ -37,6 +37,7 @@ Router.prototype._pushHistory = function (func, args) {
             historyStack = _.last(historyStack, historySize);
         }
     }
+    this.emit("statechange", current > 0, current < historyStack.length - 1);
 };
 
 Router.prototype._execHistory = function (cur) {
