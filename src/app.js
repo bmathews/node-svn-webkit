@@ -83,6 +83,7 @@ App.prototype.setRepo = function (repo) {
             }
             _this.statusbar = _this.createStatusbar(_this.svn);
             _this.statusbar.setRepo(repo);
+            _this.toolbar.setSvn(_this.svn);
             _this.wrapper.append(_this.statusbar.domNode);
             _this.router.showHistory();
             updateSyncState();

@@ -8,13 +8,11 @@ function createButton (text, btnClass, iconClass, dir) {
     return button;
 }
 
-var Toolbar = function (args) {
-    args = args || {};
+var Toolbar = function () {
     var _this = this,
         container = $('<div class="toolbar">');
 
     this.domNode = container;
-    this._syncState = args.syncState;
 
     this.backButton = createButton("", "", "icon-white icon-arrow-left", "left")
         .appendTo(container)
@@ -26,6 +24,12 @@ var Toolbar = function (args) {
         .appendTo(container)
         .on("click", function () {
             global.App.router.forward();
+        });
+
+    this.menuButton = createButton("", "", "icon-white icon-align-justify", "right")
+        .appendTo(container)
+        .on("click", function (e) {
+            _this.handleMenuClick(e);
         });
 
     this.updateButton = createButton("Branch In Sync", "syncButton", "icon-white icon-refresh", "right")
@@ -46,6 +50,7 @@ var Toolbar = function (args) {
             global.App.router.showRepositories();
         });
 
+
     global.App.router.on('statechange', function (backEnabled, forwardEnabled) {
         _this.backButton.prop('disabled', !backEnabled);
         _this.backButton.find("i").toggleClass("icon-white", backEnabled);
@@ -57,6 +62,10 @@ var Toolbar = function (args) {
 };
 
 util.inherits(Toolbar, EventEmitter);
+
+Toolbar.prototype.setSvn = function(svn) {
+    this.svn = svn;
+};
 
 Toolbar.prototype._updateSyncButton = function() {
     $('.syncButton .btnText', this.domNode).text(this._syncState ? "Branch In Sync" : "Sync Branch");
@@ -70,6 +79,40 @@ Toolbar.prototype.setSyncState = function (synced) {
 Toolbar.prototype.setUpdateButtonLoading = function (loading) {
     this.updateButton.prop("disabled", loading);
     this.updateButton.find("i").toggleClass("icon-white", !loading);
+};
+
+
+Toolbar.prototype.handleMenuClick = function (evt) {
+     var menu = new gui.Menu(), _this = this;
+
+    menu.append(new gui.MenuItem({
+        label: "Clean Up",
+        click: function () {
+            _this.svn.cleanup();
+        }
+    }));
+    menu.append(new gui.MenuItem({
+        label: "Switch...",
+        enabled: false,
+        click: function () {
+            
+        }
+    }));
+    menu.append(new gui.MenuItem({
+        label: "Branch/Tag...",
+        enabled: false,
+        click: function () {
+            
+        }
+    }));
+    menu.append(new gui.MenuItem({
+        label: "Export...",
+        enabled: false,
+        click: function () {
+            
+        }
+    }));
+    menu.popup(evt.clientX, evt.clientY);
 };
 
 module.exports = function () {
