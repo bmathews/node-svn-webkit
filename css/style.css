@@ -368,6 +368,11 @@ textarea, input[type=text] {
     background-size: 50px 50px;
 }
 
+.icon.loading {
+    background-size: 14px 14px !important;   
+    background-position: center center !important;
+}
+
 .date-splitter {
     margin: 28px 0 24px 35px;
     color: #666;

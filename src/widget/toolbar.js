@@ -5,7 +5,7 @@ var Popup = require("./popup.js");
 require('date-utils');
 
 function createButton (text, btnClass, iconClass, dir) {
-    var button = $('<button class="btn ' + btnClass + '" style="float: ' + dir + ';"><span class="btnText">' +  text + '</span><i class="' + iconClass + '"></i></button>');
+    var button = $('<button class="btn ' + btnClass + '" style="float: ' + dir + ';"><span class="btnText">' +  text + '</span><i class="icon ' + iconClass + '"></i></button>');
     return button;
 }
 
@@ -33,7 +33,7 @@ var Toolbar = function () {
             _this.handleMenuClick(e);
         });
 
-    this.updateButton = createButton("Branch In Sync", "syncButton", "icon-white icon-refresh", "right")
+    this.updateButton = createButton("Update&nbsp;&nbsp", "syncButton", "icon-white icon-ok", "right")
         .appendTo(container)
         .on("click", function () {
             _this.emit("svnUpdate");
@@ -69,7 +69,9 @@ Toolbar.prototype.setSvn = function(svn) {
 };
 
 Toolbar.prototype._updateSyncButton = function() {
-    $('.syncButton .btnText', this.domNode).text(this._syncState ? "Branch In Sync" : "Sync Branch");
+    // $('.syncButton .btnText', this.domNode).text(this._syncState ? "Update" : "Update");
+    $('.syncButton i', this.domNode).toggleClass('icon-ok', this._syncState);
+    $('.syncButton i', this.domNode).toggleClass('icon-warning-sign', !this._syncState);
 };
 
 Toolbar.prototype.setSyncState = function (synced) {
@@ -80,6 +82,7 @@ Toolbar.prototype.setSyncState = function (synced) {
 Toolbar.prototype.setUpdateButtonLoading = function (loading) {
     this.updateButton.prop("disabled", loading);
     this.updateButton.find("i").toggleClass("icon-white", !loading);
+    this.updateButton.find("i").toggleClass("loading", loading);
 };
 
 
