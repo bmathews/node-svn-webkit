@@ -463,6 +463,10 @@ textarea, input[type=text] {
     background: transparent;
 }
 
+.toolbar .btn:hover {
+    background: rgba(255,255,255, .05);
+}
+
 .statusbar {
     background-image: -webkit-linear-gradient(top, #d6d6d6, #b9b9b9);
     border-bottom: 1px solid #6b6b6b;
