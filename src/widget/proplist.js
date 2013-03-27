@@ -35,7 +35,7 @@ PropList.prototype.addProp = function (propName, propValue) {
             "<div style='float: left;'><input class='propName' type='text' list='svnPropList' value='" + propName + "'/></div>" +
             "<div class='remove' style='float: right;'><button class='btn'><i class='icon-trash'></i></button></div>" +
             "<div class='edit' style='float: right;'><button class='btn'><i class='icon-pencil'></i></button></div>" +
-            "<div class='editorRow' style='border: 1px solid #ddd; clear: both; display: none; width: 500px;'><textarea class='editor' style='width: 500px; height: 200px; display: none;'>" + propValue.trim() + "</textarea></div>" +
+            "<div class='editorRow' style='border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; clear: both; display: none; width: 500px;'><textarea class='editor' style='width: 500px; height: 200px; display: none;'>" + propValue.trim() + "</textarea></div>" +
         "</div>";
     var row = $(rowHtml);
     var editor = window.CodeMirror.fromTextArea(row.find('.editor')[0], {

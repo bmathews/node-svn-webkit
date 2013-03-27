@@ -18,6 +18,7 @@ body {
     display: none;
 }
 
+
 .change-count {
     position: absolute;
     border-radius: 3px;
@@ -122,7 +123,6 @@ li {
 }
 
 .file-diff {
-    background: white;
     overflow: hidden;
 }
 
@@ -185,6 +185,19 @@ li {
     background-color: #fcfcfc;
     border: 1px solid #d5d5d5;
     border-radius: 3px;
+}
+.mergely-canvas {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px inset;
+}
+
+.CodeMirror-gutters {
+    background: #fff;
+}
+
+.CodeMirror {
+    background: #fff;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
 }
 
 textarea, input[type=text] {
@@ -510,7 +523,6 @@ box-shadow: inset 0px 1px 0px #eee;
     height: 12px;
 }
 ::-webkit-scrollbar {
-    border-radius:8px;
 }
 ::-webkit-scrollbar-thumb {
     border-radius:8px;
@@ -522,8 +534,7 @@ box-shadow: inset 0px 1px 0px #eee;
 ::-webkit-scrollbar:active,
 ::-webkit-scrollbar:hover, 
 ::-webkit-scrollbar:focus{
-    border-radius: 8px;
-    background-color: #EEE;
+    background-color: rgba(200,200,200,.5);
 }
 
 .popup {

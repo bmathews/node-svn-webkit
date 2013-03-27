@@ -27,12 +27,10 @@
 
 .CodeMirror-gutters {
   border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
-  box-shadow: inset 1px 0px 5px #ddd
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
-  padding: 0 3px 0 5px;
+  padding: 0 5px 0 5px;
   min-width: 20px;
   text-align: right;
   color: #999;
