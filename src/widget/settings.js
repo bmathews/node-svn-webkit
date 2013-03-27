@@ -5,7 +5,7 @@ var util = require('util');
 var SettingsProvider = require('../settingsProvider');
 
 var Settings = function () {
-    this.domNode = $("<div class='change-list settings flex-item'>");
+    this.domNode = $("<div class='panel settings flex-item'>");
     // this.createField("Repo", "repo", "", "file");
     this.createField("Log limit", "logLimit", "15", "string");
     this.createField("Refresh Rate (s)", "syncRefreshInterval", "60", "string");
@@ -18,7 +18,7 @@ util.inherits(Settings, EventEmitter);
 
 Settings.prototype.createField = function (label, key, def, type, options) {
     var field, wrapper, currentValue = SettingsProvider.getValue(key, def);
-    wrapper = $("<label class='change-item' style='display: block'><span>" + label + ": </span></label>");
+    wrapper = $("<label class='' style='display: block'><span>" + label + ": </span></label>");
     if (type === "boolean") {
         field = $("<input type='checkbox' checked='" + currentValue + "'>");
         field[0].onclick = function () {

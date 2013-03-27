@@ -600,7 +600,10 @@ box-shadow: inset 0px 1px 0px #eee;
 }
 
 .settings {
-    padding-top: 6px;
+    margin: 10px;
+    padding: 10px;
+    padding-top: 0px;
+    overflow: auto;
 }
 
 .settings label span {
@@ -611,6 +614,9 @@ box-shadow: inset 0px 1px 0px #eee;
 
 .settings label {
     line-height: 30px;
+    border-bottom: 1px solid #eee;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .settings input {
