@@ -24,6 +24,7 @@ util.inherits(StatusBar, EventEmitter);
 
 StatusBar.prototype.handleCmdRun = function (proc, cmd, args) {
     var _this = this;
+    this.status.find('.idle').remove();
     var node = $('<div class="process-status loading">' + cmd + " " + (args[0].length > 8 ? args[0].substr(0, 8) + " ..." : args[0])  + '</div>');
     var log = $("<div style='height: 300px; width: 400px; color: #333; overflow: scroll; border: 1px solid #ddd; padding: 5px; font-family: monospace;'>");
     var closed = false;
@@ -41,7 +42,7 @@ StatusBar.prototype.handleCmdRun = function (proc, cmd, args) {
     });
 
     proc.on('close', function (code) {
-        log.html(log.html() + "<div class='exit data' style='color: green;'>" + String(code) + "</div>");
+        log.html(log.html() + "<div class='exit data' style='color: green;'>Closed with code: " + String(code) + "</div>");
         log[0].scrollTop = log[0].scrollHeight;
         closed = true;
     });
@@ -53,17 +54,16 @@ StatusBar.prototype.handleCmdRun = function (proc, cmd, args) {
             }
         }, {
             html: log,
-            okMessage: "KILL",
+            okMessage: "KILL PROCESS",
             cancelMessage: "Close"
         });
     });
     node.attr('title', cmd + " " + args.join(" "));
     this.status.append(node);
     proc.on('close', function () {
+        node.remove();
         if (_this.status.children().length === 0) {
-            _this.status.html("Idle");
-        } else {
-            node.remove();
+            _this.status.append($('<div class="idle process-status">Idle</div>'));
         }
     });
 };
