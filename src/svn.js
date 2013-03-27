@@ -6,9 +6,10 @@ var path = require('path');
 var util = require('util');
 var EventEmitter = require("events").EventEmitter;
 
-var SVN = function (repoRoot, readyCallback) {
+var SVN = function (repo, readyCallback) {
     var _this = this;
-    this.repoRoot = repoRoot;
+    this.repoConfig = repo;
+    this.repoRoot = repo.path;
     this.run('svn', ['--version'], function (err, text) {
         if (!err) {
             _this.refreshInfoCache("info", readyCallback);
@@ -220,6 +221,14 @@ svn.run = function (cmd, args, callback) {
         err = "",
         proc = spawn(cmd, args, { cwd: this.repoRoot });
 
+    if (cmd === "svn") {
+        args = args.concat(['--non-interactive', '--trust-server-cert']);
+    }
+    
+    if (cmd === "svn" && this.repoConfig.username && this.repoConfig.pw) {
+        args = args.concat(['--username', this.repoConfig.username, '--password', this.repoConfig.pw]);
+    }
+
     this.emit("cmd", proc, cmd, args);
 
     console.warn("Running cmd: ", cmd, args);
@@ -333,6 +342,6 @@ svn._parseStatus = function (text) {
     return changes;
 };
 
-module.exports = function (path, readyCallback) {
-    return new SVN(path, readyCallback);
+module.exports = function (repo, readyCallback) {
+    return new SVN(repo, readyCallback);
 };

@@ -64,7 +64,7 @@ App.prototype.setRepo = function (repo) {
     refreshInterval = SettingsProvider.getValue("syncRefreshInterval");
     refreshInterval = refreshInterval ? parseInt(refreshInterval, 10) * 1000 : 60000;
 
-    _this.svn = new SVN(repo.path, function (err, info) {
+    _this.svn = new SVN(repo, function (err, info) {
         if (!err) {
             if (_this.statusbar) {
                 _this.statusbar.domNode.remove();
