@@ -129,7 +129,8 @@ Toolbar.prototype.handleMenuClick = function (evt) {
 };
 
 Toolbar.prototype.handleSwitchClicked = function () {
-    var html =
+    var _this = this,
+        html =
             '<div style="width: 400px;">' +
                 '<div style="font-weight: 700;">From:</div>' +
                 '<div>' + this.svn.info.url + '</div>' +
@@ -144,9 +145,9 @@ Toolbar.prototype.handleSwitchClicked = function () {
         if (confirm) {
             _this.svn.switchUrl(html.find('input').val(), function (err, info) {
                 if (!err) {
-                    window.confirm(info + err);
+                    window.confirm("Switched to: " + info.url);
                 } else {
-                    window.confirm(info + err);
+                    window.confirm("Error switching to: " + info.url + "\n\n" + err);
                 }
             });
         }
