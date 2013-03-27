@@ -122,6 +122,10 @@ Router.prototype.showBrowse = function () {
     this.emit("route:browse");
 };
 
+Router.prototype.setChangeList = function (changes) {
+    this.emit("changes", changes);
+};
+
 module.exports = function (app) {
     return new Router(app);
 };

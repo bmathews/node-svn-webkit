@@ -169,6 +169,8 @@ ChangeList.prototype.renderChanges = function (changes) {
         prevDate,
         _this = this;
 
+    global.App.router.setChangeList(changes);
+
     _this.lastUpdate = new Date();
 
     _this.items = [];

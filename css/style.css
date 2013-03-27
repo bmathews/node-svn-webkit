@@ -14,6 +14,25 @@ body {
     -webkit-app-region: no-drag;
 }
 
+.change-count.unknown {
+    display: none;
+}
+
+.change-count {
+    position: absolute;
+    border-radius: 3px;
+    background: #5f88dc;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    display: block;
+    top: 84px;
+    left: 18px;
+    padding: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
 ul {
     margin: 0;
     padding: 0;
@@ -33,11 +52,13 @@ li {
     border: 1px solid #d5d5d5;
     border-radius: 3px;
     overflow: hidden;
+    position: relative;
 }
 
 .nav-container .nav-icon {
     cursor: pointer;
     color: #000;
+    position: relative;
     text-align: center;
     width: 80px;
     height: 80px;

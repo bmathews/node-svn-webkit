@@ -19,6 +19,7 @@ var Navigation = function () {
     });
 
     _this.items = items;
+    this.changeCounter = $("<div class='change-count unknown'>").appendTo(container);
 
     var wrapper = $('<div class="nav-wrapper flex-item flex row fixed">');
     wrapper.append(container);
@@ -45,6 +46,11 @@ Navigation.prototype.createRouterListeners = function () {
 
     global.App.router.on('route:browse', function () {
         _this.select("Browse", true);
+    });
+
+    global.App.router.on('changes', function (changes) {
+        _this.changeCounter.html(changes.length);
+        _this.changeCounter.removeClass('unknown');
     });
 };
 
