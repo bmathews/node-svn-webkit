@@ -63,6 +63,7 @@ ChangeList.prototype.showChanges = function () {
                 _this.commitButton.removeAttr('disabled');
                 _this.refresh();
                 if (!err) {
+                    _this.message.val("");
                     new Popup("Success!", text, function () {
 
                     });
