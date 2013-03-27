@@ -45,7 +45,7 @@ var Toolbar = function () {
             global.App.router.showSettings();
         });
 
-    this.repoButton = createButton("", "", "icon-white icon-bookmark", "left")
+    this.repoButton = createButton("", "", "icon-white icon-inbox", "left")
         .appendTo(container)
         .on("click", function () {
             global.App.router.showRepositories();
@@ -71,7 +71,7 @@ Toolbar.prototype.setSvn = function(svn) {
 Toolbar.prototype._updateSyncButton = function() {
     // $('.syncButton .btnText', this.domNode).text(this._syncState ? "Update" : "Update");
     $('.syncButton i', this.domNode).toggleClass('icon-ok', this._syncState);
-    $('.syncButton i', this.domNode).toggleClass('icon-warning-sign', !this._syncState);
+    $('.syncButton i', this.domNode).toggleClass('icon-time', !this._syncState);
 };
 
 Toolbar.prototype.setSyncState = function (synced) {

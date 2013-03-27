@@ -4,6 +4,7 @@ var EventEmitter = require("events").EventEmitter;
 var util = require('util');
 var Popup = require("./popup");
 var PropList = require("./proplist");
+var pathUtil = require("path");
 
 var Browse = function (svn) {
     this.svn = svn;
@@ -59,6 +60,26 @@ Browse.prototype.handlePathContextMenu = function (path, evt) {
                     });
                 }
             });
+        }
+    }));
+
+    menu.append(new gui.MenuItem({
+        type: "separator"
+    }));
+
+    menu.append(new gui.MenuItem({
+        label: 'Reveal File',
+        click: function () {
+            // Open a file in file explorer.
+            gui.Shell.showItemInFolder(path);
+        }
+    }));
+
+    menu.append(new gui.MenuItem({
+        label: 'Edit File',
+        click: function () {
+            // Open a text file with default text editor.
+            gui.Shell.openItem(path);
         }
     }));
 
