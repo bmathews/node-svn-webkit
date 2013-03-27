@@ -141,12 +141,15 @@ li {
 }
 
 .propList {
-    text-align: center;
+    text-align: left;
+    width: 500px;
+}
+.propList .editorRow .CodeMirror {
+    text-align: left;
+    width: 200px;
+    height: 200px;
 }
 
-.propList td > div {
-    height: 30px;
-}
 .propList td > div > input,
 .propList td > div > textarea {
     height: 100%;

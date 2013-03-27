@@ -13,7 +13,6 @@ var Browse = function (svn) {
     var tree = $('<div class="panel">');
 
     tree.fileTree({ root: svn.repoRoot }, function (path) {
-        // console.log(path);
     }, function (path, evt) {
         _this.handlePathContextMenu(path, evt);
     });
@@ -47,7 +46,7 @@ Browse.prototype.handlePathContextMenu = function (path, evt) {
                             for (var prop in newProps) {
                                 _this.svn.setProperty(path, prop, newProps[prop]);
                             }
-                            for (var prop in props) {
+                            for (prop in props) {
                                 if (!newProps[prop]) {
                                     _this.svn.setProperty(path, prop, null);
                                 }
@@ -60,8 +59,6 @@ Browse.prototype.handlePathContextMenu = function (path, evt) {
                     });
                 }
             });
-//            var relPath = path.replace(_this.svn.repoRoot, "");
-//            global.App.router.showHistory(relPath);
         }
     }));
 

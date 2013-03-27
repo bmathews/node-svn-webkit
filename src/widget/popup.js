@@ -7,6 +7,7 @@ var Popup = function (title, msg, callback, options) {
     var _this = this;
     var opts = options || {};
     this.domNode = $("<div class='popup'>");
+    this.buttonBar = $("<div class='button-bar'>");
     var okButton = $("<button class='btn btn-ok'>" + (opts.okMessage || "Ok") + "</button>");
     var cancelButton = $("<button class='btn btn-cancel'>" + (opts.cancelMessage || "Cancel") + "</button>");
     var titleNode = $("<div class='popup-title'>" + title + "</div>");
@@ -21,8 +22,8 @@ var Popup = function (title, msg, callback, options) {
         this.domNode.append(opts.html);
     }
 
-    if (opts.ok !== false) this.domNode.append(okButton);
-    if (opts.cancel !== false) this.domNode.append(cancelButton);
+    if (opts.ok !== false) this.buttonBar.append(okButton);
+    if (opts.cancel !== false) this.buttonBar.append(cancelButton);
 
     okButton.click(function () {
         callback(true);
@@ -33,6 +34,7 @@ var Popup = function (title, msg, callback, options) {
         callback(false);
         _this.close();
     });
+    this.domNode.append(this.buttonBar);
     $(window.document.body).append(cover);
     cover.append(this.domNode);
 };
