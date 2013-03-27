@@ -444,6 +444,12 @@ textarea, input[type=text] {
     box-shadow: 0px 1px 0px #fefefe, inset 0px -1px 1px rgba(0,0,0,.5);
     min-height: 30px;
     padding: 5px;
+    background-image: -webkit-linear-gradient(top, #555, #414141);
+    box-shadow: inset 0px 1px 0px rgba(255,255,255,.2), 0px 1px 0px rgba(255,255,255,1);
+    min-height: 30px;
+    padding: 5px;
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #333;
 }
 
 .toolbar .btn {
