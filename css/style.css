@@ -31,6 +31,7 @@ body {
     padding: 2px;
     padding-left: 4px;
     padding-right: 4px;
+    pointer-events: none;
 }
 
 ul {

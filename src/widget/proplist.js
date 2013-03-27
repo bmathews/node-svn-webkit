@@ -48,9 +48,9 @@ PropList.prototype.addProp = function (propName, propValue) {
     // var visible = false;
     $('.edit', row).click(function() {
         var visible = row.find('.editorRow').is(":visible");
-        _this.domNode.find('.editorRow').hide();
+        _this.domNode.find('.editorRow').slideUp(100);
         if (visible === false) {
-            row.find('.editorRow').show(100);
+            row.find('.editorRow').slideDown();
         }
         editor.setCursor(0);
         editor.setSize('500px', '200px');
