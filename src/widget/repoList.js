@@ -41,7 +41,7 @@ RepoList.prototype.handleAddEditClick = function (repo) {
     var dialog = $('<input style="display:none;" type="file" nwdirectory value="' + (repo.path ? repo.path : "") + '"/>');
     var browse = $('<button class="btn"><i class="icon-folder-open"></i></button>');
     var name = $("<input type='text' placeholder='Repository Name' value='" + (repo.name ? repo.name : "") + "'>");
-    var input = $("<span'>" + (repo.path || "Browse for repository location") + "</div>");
+    var input = $("<span title='" + (repo.path ? repo.path : "")+ "''>" + (repo.path || "Browse for repository location") + "</div>");
     var username = $("<input type='text' placeholder='Username' value='" + (repo.username ? repo.username : "") + "'>");
     var pw = $("<input type='password' placeholder='Password' value='" + (repo.pw ? repo.pw : "") + "'>");
     var locationwrapper = $("<div style='overflow: hidden; white-space: nowrap; text-overflow: ellipsis;'>");
@@ -52,6 +52,7 @@ RepoList.prototype.handleAddEditClick = function (repo) {
     dialog.change(function () {
         if ($(this).val()) {
             input.html($(this).val());
+            input.attr('title', ($(this).val()));
             dialog.attr('value', input.html());
         }
     });
