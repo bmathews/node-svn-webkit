@@ -22,7 +22,7 @@ Router.prototype._pushHistory = function (func, args) {
         });
 
         //trim to historySize
-        if (current < historySize) {
+        if (current < historySize - 1) {
             current += 1;
             historyStack = historyStack.slice(0, current + 1); //clear forwards
         } else {
