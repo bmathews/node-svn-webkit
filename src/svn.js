@@ -244,11 +244,7 @@ svn.run = function (cmd, args, callback) {
         }
     });
 
-    return function () {
-        this.cancel = function () {
-            proc.kill('SIGHUP');
-        };
-    };
+    return proc;
 };
 
 svn._parseLogEntry = function (logText) {

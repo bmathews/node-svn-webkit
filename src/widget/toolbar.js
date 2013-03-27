@@ -89,7 +89,9 @@ Toolbar.prototype.handleMenuClick = function (evt) {
     menu.append(new gui.MenuItem({
         label: "Clean Up",
         click: function () {
-            _this.svn.cleanup();
+            _this.svn.cleanup("", function (err, text) {
+                window.confirm(err + text);
+            });
         }
     }));
     menu.append(new gui.MenuItem({
