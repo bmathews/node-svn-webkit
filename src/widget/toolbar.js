@@ -15,13 +15,13 @@ var Toolbar = function () {
 
     this.domNode = container;
 
-    this.backButton = createButton("", "", "icon-white icon-arrow-left", "left")
+    this.backButton = createButton("", "", "icon-arrow-left", "left")
         .appendTo(container)
         .on("click", function () {
             global.App.router.back();
         });
 
-    this.forwardButton = createButton("", "", "icon-white icon-arrow-right", "left")
+    this.forwardButton = createButton("", "", "icon-arrow-right", "left")
         .appendTo(container)
         .on("click", function () {
             global.App.router.forward();
