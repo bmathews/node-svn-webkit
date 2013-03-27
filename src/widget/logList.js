@@ -11,7 +11,7 @@ var LogList = function (svn, path) {
     this.svn = svn;
     this.domNode = $("<div class='log-list-wrapper flex-item'>");
     this.refreshButton = $('<button style="float: right; margin-top: 24px; margin-right: 10px; z-index: 10; position: relative;" class="btn"><i class="icon-refresh"></i></button>');
-    this.domNode.append(this.refreshButton);
+    // this.domNode.append(this.refreshButton);
     this.logContainer = $("<div class='log-list'>");
     this.domNode.append(this.logContainer);
     this.fetchLogs(path);
