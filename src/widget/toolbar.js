@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var util = require('util');
 var EventEmitter = require("events").EventEmitter;
+var Popup = require("./popup.js");
 require('date-utils');
 
 function createButton (text, btnClass, iconClass, dir) {
@@ -93,26 +94,54 @@ Toolbar.prototype.handleMenuClick = function (evt) {
     }));
     menu.append(new gui.MenuItem({
         label: "Switch...",
-        enabled: false,
+        enabled: true,
         click: function () {
-            
+            _this.handleSwitchClicked();
         }
     }));
     menu.append(new gui.MenuItem({
         label: "Branch/Tag...",
         enabled: false,
         click: function () {
-            
+
         }
     }));
     menu.append(new gui.MenuItem({
         label: "Export...",
         enabled: false,
         click: function () {
-            
+
         }
     }));
     menu.popup(evt.clientX, evt.clientY);
+};
+
+Toolbar.prototype.handleSwitchClicked = function () {
+    var html =
+            '<div style="width: 400px;">' +
+                '<div style="font-weight: 700;">From:</div>' +
+                '<div>' + this.svn.info.url + '</div>' +
+                '<div style="margin-top: 10px; font-weight: 700;">To:</div>' +
+                '<input style="width: 100%;"type="text" value="' + this.svn.info.url + '"/>' +
+            '</div>',
+        popup;
+
+    html = $(html);
+
+    popup = new Popup("Switch...", null, function (confirm) {
+        if (confirm) {
+            _this.svn.switchUrl(html.find('input').val(), function (err, info) {
+                if (!err) {
+                    window.confirm(info + err);
+                } else {
+                    window.confirm(info + err);
+                }
+            });
+        }
+    }, {
+        html: html
+    });
+    // new Popup(title, msg, callback, options)
 };
 
 module.exports = function () {

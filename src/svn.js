@@ -33,9 +33,9 @@ svn.refreshInfoCache = function (infoCacheName, callback, revision) {
     }, revision);
 };
 
-svn.switchAll = function (rev, callback) {
+svn.switchUrl = function (path, callback) {
     var _this = this;
-    return this.run('svn', ['switch', this.info.url, this.repoRoot, '-r', rev, '--accept', 'postpone'], function (err, text) {
+    return this.run('svn', ['switch', path, this.repoRoot, '--accept', 'postpone'], function (err, text) {
         if (!err) {
             // Update the info if we successfully updated
             _this.refreshInfoCache("info", function (err, info) {
