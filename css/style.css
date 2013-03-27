@@ -200,7 +200,7 @@ li {
     border-left: 1px solid #ccc;
 }
 
-textarea, input[type=text] {
+textarea, input[type=text], input[type=password] {
     background-color: #fcfcfc;
     border: 1px solid #d5d5d5;
     border-top: 1px solid #d3d3d3;
@@ -221,6 +221,18 @@ textarea, input[type=text] {
     width: 100%;
     margin-bottom: 6px;
     margin-top: 6px;
+}
+
+.repo-label {
+    color: #aaa;
+    clear: both;
+    float: left;
+    width: 80px;
+    position: relative;
+    top: 10px;
+    text-align: right;
+    margin-right: 10px;
+    display: inline-block;
 }
 
 .commit-wrapper .title {

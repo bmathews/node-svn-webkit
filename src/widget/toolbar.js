@@ -154,7 +154,6 @@ Toolbar.prototype.handleSwitchClicked = function () {
     }, {
         html: html
     });
-    // new Popup(title, msg, callback, options)
 };
 
 module.exports = function () {

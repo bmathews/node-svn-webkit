@@ -17,7 +17,7 @@ var RepoList = function (svn) {
     this.addButton = $('<button class="btn"><div class="icon-plus-sign"></div>Add Repo</button>')
         .appendTo(buttonBar)
         .on('click', function () {
-            _this.handleAddClick();
+            _this.handleAddEditClick({});
         });
 
     this.checkoutButton = $('<button class="btn"><div class="icon-download-alt"></div>Checkout Repo</button>')
@@ -35,13 +35,17 @@ var RepoList = function (svn) {
 
 util.inherits(RepoList, EventEmitter);
 
-RepoList.prototype.handleAddClick = function () {
+RepoList.prototype.handleAddEditClick = function (repo) {
     var _this = this;
-    var html = $('<div style="width: 300px; border-bottom: 1px solid #eee; margin-bottom: 8px; padding-bottom: 8px;">');
-    var dialog = $('<input style="display:none;" type="file" nwdirectory value="' + "" + '"/>');
-    var browse = $('<button class="btn">Browse</button>');
-    var name = $("<input type='text' placeholder='Repository Name'>");
-    var input = $("<span>" + "Browse for repository location" + "</div>");
+    var html = $('<div style="width: 400px; border-bottom: 1px solid #eee; margin-bottom: 8px; padding-bottom: 8px;">');
+    var dialog = $('<input style="display:none;" type="file" nwdirectory value="' + (repo.path ? repo.path : "") + '"/>');
+    var browse = $('<button class="btn"><i class="icon-folder-open"></i></button>');
+    var name = $("<input type='text' placeholder='Repository Name' value='" + (repo.name ? repo.name : "") + "'>");
+    var input = $("<span'>" + (repo.path || "Browse for repository location") + "</div>");
+    var username = $("<input type='text' placeholder='Username' value='" + (repo.username ? repo.username : "") + "'>");
+    var pw = $("<input type='password' placeholder='Password' value='" + (repo.pw ? repo.pw : "") + "'>");
+    var locationwrapper = $("<div style='overflow: hidden; white-space: nowrap; text-overflow: ellipsis;'>");
+
     browse.on('click', function () {
         dialog.trigger('click');
     });
@@ -51,21 +55,35 @@ RepoList.prototype.handleAddClick = function () {
             dialog.attr('value', input.html());
         }
     });
-    html.append(name);
-    html.append("<br>");
-    html.append(browse);
-    html.append(input);
+    html.append($("<div class='repo-label'>Repo Name</div>"));
+    html.append(name).append($("<div>"));
+    html.append($("<div class='repo-label'>Location</div>"));
+    locationwrapper.append(browse);
+    locationwrapper.append(input);
+    html.append(locationwrapper).append($("<div>"));
+    html.append($("<div class='repo-label'>Username</div>"));
+    html.append(username).append($("<div>"));
+    html.append($("<div class='repo-label'>Password</div>"));
+    html.append(pw).append($("<div>"));
 
     html.append(dialog);
 
-    new Popup("Add Repo", null, function (doSave) {
+    new Popup(repo.name ? "Edit Repo" : "Add Repo", null, function (doSave) {
         if (doSave) {
-            var repo = {
-                path: dialog.val(),
-                name: name.val()
-            };
-            _this.repoList.push(repo);
-            _this.addItem(repo);
+            var edit = !!repo.name;
+
+            repo.path = dialog.attr('value');
+            repo.name = name.val();
+            repo.username = username.val();
+            repo.pw = pw.val();
+
+            if (!edit) {
+                _this.repoList.push(repo);
+                _this.addItem(repo);
+            } else {
+                _this.showRepoList(_this.repoList);
+            }
+
             _this.saveRepoList();
         }
     }, {
@@ -83,16 +101,6 @@ RepoList.prototype.handleRemoveClick = function (repo) {
     this.repoList.splice(index, 1);
     this.logContainer.children()[index].remove();
     this.saveRepoList();
-};
-
-RepoList.prototype.handleEditClick = function (repo) {
-    new Popup("Edit Repo", null, function (doSave) {
-        if (doSave) {
-        }
-    }, {
-        okMessage: "Save",
-        html: new PropList().domNode
-    })
 };
 
 RepoList.prototype.handleRepoClick = function (repo) {
@@ -116,7 +124,7 @@ RepoList.prototype.addItem = function (repo) {
         .appendTo(repoNode)
         .on('click', function (e) {
             e.stopPropagation();
-            _this.handleEditClick(repo);
+            _this.handleAddEditClick(repo);
         });
 
     deleteButton = $('<button style="float: right;" class="btn"><i class="icon-trash"></i></button>')
@@ -131,6 +139,7 @@ RepoList.prototype.addItem = function (repo) {
 
 RepoList.prototype.showRepoList = function (repoList) {
     var _this = this;
+    this.logContainer.empty();
 
     _.each(repoList, function (repo) {
         _this.addItem(repo);
