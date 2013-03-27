@@ -54,11 +54,14 @@ ChangeList.prototype.showChanges = function () {
     this.commitButton[0].onclick = function () {
         var paths = _this.getSelectedPaths();
         if (paths.length) {
-            //TODO: Load spinner. Enable/disable
+            _this.commitButton.attr('disabled', 'disabled');
+            //TODO: Load spinner.
             _this.svn.commit({
                 message: _this.message[0].value,
                 files: paths
             }, function (err, text) {
+                _this.commitButton.removeAttr('disabled');
+                _this.refresh();
                 if (!err) {
                     new Popup("Success!", text, function () {
 
@@ -247,6 +250,7 @@ ChangeList.prototype.handleContextMenu = function (evt, change) {
 
     menu.append(new gui.MenuItem({
         label: 'Show History',
+        enabled: status !== "?",
         click: function () {
             global.App.router.showHistory(change.path);
         }
