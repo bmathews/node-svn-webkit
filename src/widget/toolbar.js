@@ -17,12 +17,19 @@ var Toolbar = function () {
 
     this.backButton = createButton("", "", "icon-arrow-left", "left")
         .appendTo(container)
+        .css({
+            "borderRadius": "3px 0px 0px 3px"
+        })
         .on("click", function () {
             global.App.router.back();
         });
 
     this.forwardButton = createButton("", "", "icon-arrow-right", "left")
         .appendTo(container)
+        .css({
+            "borderRadius": "0px 3px 3px 0px",
+            "marginLeft": "-3px"
+        })
         .on("click", function () {
             global.App.router.forward();
         });
