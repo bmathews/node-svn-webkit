@@ -5,6 +5,7 @@ var spawn = require('child_process').spawn;
 var path = require('path');
 var util = require('util');
 var EventEmitter = require("events").EventEmitter;
+var toUtf8 = require("./toUtf8");
 
 var SVN = function (repo, readyCallback) {
     var _this = this;
@@ -217,6 +218,9 @@ svn.cleanup = function (path, callback) {
 };
 
 svn.run = function (cmd, args, callback) {
+    var BufHep = require('bufferhelper')
+    var outhep = new BufHep()
+    var errhep = new BufHep()
     var text = "",
         err = "",
         proc = spawn(cmd, args, { cwd: this.repoRoot });
@@ -234,22 +238,27 @@ svn.run = function (cmd, args, callback) {
     console.warn("Running cmd: ", cmd, args);
 
     proc.stdout.on('data', function (data) {
-        text += data;
+        // text += data;
+        outhep.concat(data)
     });
 
     proc.stderr.on('data', function (data) {
-        data = String(data);
+        errhep.concat(data)
+        // data = String(data);
 
         //ssh warning, ignore
         if (data.indexOf("Killed by signal 15.") === -1) {
-            err += data;
-            console.error(data);
+            // err += data;
+            // console.error(data);
         }
     });
 
     proc.on('close', function (code) {
         if (callback) {
-            callback(err, text);
+            // callback(err, text);
+            var errtext = toUtf8(errhep.toBuffer())
+            var outtext = toUtf8(outhep.toBuffer())
+            callback(errtext, outtext);
         }
     });
 
