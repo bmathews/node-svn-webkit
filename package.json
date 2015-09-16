@@ -10,9 +10,9 @@
         "height": 800
     },
     "dependencies": {
+        "buffer-encoding": "0.0.1",
         "bufferhelper": "^0.2.0",
         "date-utils": "*",
-        "iconv-lite": "^0.4.11",
         "underscore": "*"
     }
 }

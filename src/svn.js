@@ -5,7 +5,7 @@ var spawn = require('child_process').spawn;
 var path = require('path');
 var util = require('util');
 var EventEmitter = require("events").EventEmitter;
-var toUtf8 = require("./toUtf8");
+var convert = require("buffer-encoding").convert;
 
 var SVN = function (repo, readyCallback) {
     var _this = this;
@@ -256,8 +256,8 @@ svn.run = function (cmd, args, callback) {
     proc.on('close', function (code) {
         if (callback) {
             // callback(err, text);
-            var errtext = toUtf8(errhep.toBuffer())
-            var outtext = toUtf8(outhep.toBuffer())
+            var errtext = convert(errhep.toBuffer(), 'utf8').toString()
+            var outtext = convert(outhep.toBuffer(), 'utf8').toString()
             callback(errtext, outtext);
         }
     });
