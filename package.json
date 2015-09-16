@@ -5,12 +5,14 @@
     "main": "index.html",
     "window": {
         "toolbar": false,
-        // "frame": false,
-        "width": 600,
-        "height": 400
+        "frame": true,
+        "width": 1000,
+        "height": 800
     },
     "dependencies": {
-        "underscore": "*",
-        "date-utils": "*"
+        "buffer-encoding": "0.0.1",
+        "bufferhelper": "^0.2.0",
+        "date-utils": "*",
+        "underscore": "*"
     }
 }
